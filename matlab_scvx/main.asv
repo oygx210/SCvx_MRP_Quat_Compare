@@ -21,10 +21,10 @@ lander_nd.XT = zeros(size(lander_nd.X0));
 % Compute a prior reference state and control input history over K
 [x_0, u_0] = initialize_reference_trajectory(lander_nd, K);
 
-% Set the dimensions of things!
+% Set the dimensions of things
 lander_nd.m = length(x_0(:,1));
 lander_nd.n = length(u_0(:,1));
-lander_nd.K = K;
+lander_nd.K = 
 
 % Configure weights
 w_nu 		= 1.e5;
@@ -42,7 +42,7 @@ x = lander_nd.X0;
 u = lander_nd.U0;
 
 % precompute jacobians for use later
-lander_dynamics = vehicle_dynamics(lander_nd);
+lander_dynamics = vehicle_dynamics(lander_nd, K);
 
 while ~converged && iter_counter < iter_limit && ~error_flag
    iter_counter = iter_counter + 1;
