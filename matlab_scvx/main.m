@@ -7,14 +7,14 @@ K = 50;
 vehicle_params;
 
 % Configure the initial condition
-tf_guess = 10;
+tf_guess = 12.14;
 r_N_0 = [100 100 100].';
-v_N_0 = -[1 1 1].';
-sigma = [0 0 0].';
+v_N_0 = -[10 10 10].';
+sigmaBN = [0 0 0].';
 omega = [0.01 0.01 0.01].';
 
 % Can use any form of attitude formalism for sigma here.
-lander_nd = compute_nd_factors(lander, tf_guess, r_N_0, v_N_0, sigma, omega);
+lander_nd = compute_nd_factors(lander, tf_guess, r_N_0, v_N_0, sigmaBN, omega);
 % Terminal state (terminal mass should be left unconstrained)
 lander_nd.XT = zeros(size(lander_nd.X0));
 
@@ -27,101 +27,93 @@ lander_nd.n = length(u_0(:,1));
 lander_nd.K = K;
 
 % Configure weights
-w_nu 		= 1.e5;
-w_delta 	= 1.e-3;
-w_delta_sigma = 0.1; 
-weights = [w_nu w_delta w_delta_sigma];
+weights.w_nu	= 1.e5;
+weights.w_dxu 	= 1.e-3;
+weights.w_ds    = 0.1; 
+weights.w_s     = 1;
 
 % set up beginning of loop
-sigma = tf_guess;
+eta = tf_guess;
 converged = false;
 error_flag = false;
 iter_counter = 0;
 solve_time = 0;
-x = lander_nd.X0;
-u = lander_nd.U0;
+x = x_0;
+u = u_0;
 
 % precompute jacobians for use later
 lander_dynamics = vehicle_dynamics(lander_nd);
 
-while ~converged && iter_counter < iter_limit && ~error_flag
+while ~converged && iter_counter < iter_limit
    iter_counter = iter_counter + 1;
    disp("Iteration " + string(iter_counter));
    
    % Compute the linear system matrices
-   A_bar, B_bar, C_bar, Sigma_bar, z_bar = lander_dynamics.discretized_dynamics(x, u, sigma);
+   tic
+   output_matrices = lander_dynamics.discretized_dynamics(x, u, eta);
     
-   % Form and solve the convex sub-problme
-    [x_cvx, u_cvx, sigma_cvx, delta_norm_cvx, ...
-        sigma_norm_cvx, nu_cvx, error, stats] = scvx_subproblem(lander, A_bar, ...
-                                                B_bar, C_bar, Sigma_bar, ...
-                                                z_bar, x, u, sigma, ...
-                                                weights, K);
+   % Form and solve the convex sub-problem. Send in the last trajectory and
+   % input history for the trust regions.
+   o_cvx = scvx_subproblem(lander_nd, output_matrices, x, u, eta, weights);
+   disp('dxu_norm   = '+string(o_cvx.delta_norm));
+   disp('sigma_norm = '+string(o_cvx.sigma_norm));
+   disp('nu_norm    = '+string(o_cvx.nu_norm));
+   toc
    
-    % Flag an error, if that happens
-    if error
-        error_flag = true;
-    else
-        x = x_cvx.value();
-        
-    end
+   x = o_cvx.x;
+   u = o_cvx.u;
+   eta = o_cvx.sigma;
+    
+%    if o_cvx.status ~= 'Solved'
+%        break;
+%    end
+   
+   if o_cvx.delta_norm < 1e-3 && o_cvx.sigma_norm < 1e-3 && o_cvx.nu_norm < 1e-7
+       converged = true;
+   end
+   
+   weights.w_dxu = weights.w_dxu*1.5;
    
 end
 
+%% plots
+close all;
+figure;
+plot(1:K, x(1,:).*lander_nd.UM)
+title('mass')
 
+figure;
+plot(1:K, x(2,:).*lander_nd.UR); hold on;
+plot(1:K, x(3,:).*lander_nd.UR); hold on;
+plot(1:K, x(4,:).*lander_nd.UR); hold on;
+title('distance')
+legend('x','y','z')
 
-% while not converged and conv_counter < conv_limit and not error_flag:
-%     conv_counter +=1;
-%     print("Iteration " + str(conv_counter) + "       CURRENT RUN COUNT " + str(j));
-%     # this performs a discrete integration and finds the new ABCSz values
-%     # at each time for the next optimization intseration
-%     A_bar, B_bar, C_bar, Sigma_bar, z_bar = \
-%         integrator.discretized_dynamics(x, u, sigma);
-% 
-%     # Solves the individual convex problem
-%     x_cvx, u_cvx, sigma_cvx, delta_norm_cvx, \
-%         sigma_norm_cvx, nu_cvx, error, stats = \
-%         cvx_problem(lander, A_bar, B_bar, C_bar, Sigma_bar, \
-%             z_bar, x, u, sigma, weights, K);
-% 
-%     if error:
-%         print(error);
-%         error_flag = 1;
-%     else:
-%         x = x_cvx.value;
-%         u = u_cvx.value;
-%         sigma = sigma_cvx.value;
-%         delta_norm = delta_norm_cvx.value;
-%         sigma_norm = sigma_norm_cvx.value;
-%         nu = nu_cvx.value;
-% 
-%         nu_norm = np.linalg.norm(nu, np.inf);
-% 
-%         if delta_norm > 1e-3:
-%             weights[1] *= 1.5;
-%             # weights[1] *= 20;
-%         else:
-%             weights[1] *= 1.1
-% 
-%         if delta_norm < 1e-3 and sigma_norm < 1e-3 and nu_norm < 1e-7:
-%             converged = True;
-% 
-%         solve_time += stats.solve_time + stats.solve_time;
-% 
-%         thing = np.array([nu_norm, delta_norm, sigma_norm]);
-%         print("[nu_norm delta_norm sigma_norm ] ==	" + str(thing));
-%         print("Has converged:  		" + str(converged));
-%         print("Final Time for Iterate:  " + str(sigma));
-%         print("Solve time for Iterate:  " + str(stats.solve_time + stats.solve_time));
-%         print("")
-%         # store the iteration number and the sigma
-%         iterate_data = np.append(iterate_data, [[conv_counter, sigma, x[0,-1]]],  axis=0);
-% 
-% if not error_flag and converged:
-%     solve_times[j] = solve_time;
-%     x_total[j*K:(j+1)*K,:] = np.transpose(x);
-%     u_total[j*K:(j+1)*K,:] = np.transpose(u);
-%     scaling_conts[j,:] = lander.things_that_matter;
-%     sigma_total[j] = sigma;
-%     j += 1;
+figure;
+plot(1:K, x(5,:).*lander_nd.UV); hold on;
+plot(1:K, x(4,:).*lander_nd.UV); hold on;
+plot(1:K, x(7,:).*lander_nd.UV); hold on;
+title('velocity')
+legend('x','y','z')
+
+figure;
+plot(1:K, x(11,:)/lander_nd.UT); hold on;
+plot(1:K, x(12,:)/lander_nd.UT); hold on;
+plot(1:K, x(13,:)/lander_nd.UT); hold on;
+title('omega rate')
+legend('w1','w2','w3')
+
+figure;
+plot(1:K, u(1,:).*lander_nd.UF); hold on;
+plot(1:K, u(2,:).*lander_nd.UF); hold on;
+plot(1:K, u(3,:).*lander_nd.UF); hold on;
+plot(1:K, vecnorm(u).*lander_nd.UF, '--'); hold on;
+title('inputs')
+legend('x','y','z')
+
+figure;
+plot3(x(2,:), x(3,:), x(4,:)); hold on;
+plot3(x(2,1), x(3,1), x(4,1),'go'); hold on;
+plot3(x(2,end), x(3,end), x(4,end),'ro'); hold on;
+grid on;
 

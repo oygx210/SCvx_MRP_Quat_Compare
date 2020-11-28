@@ -90,8 +90,8 @@ classdef vehicle_dynamics
             
             dLdt(self.x_ind)    = (sigma * f_xi).';
             dLdt(self.A_bar_ind)= reshape(A_xi*Phi_xi_tk, [], 1);
-            dLdt(self.B_bar_ind)= reshape(ak*B_mult, [], 1);
-            dLdt(self.C_bar_ind)= reshape(bk*B_mult, [], 1);
+            dLdt(self.B_bar_ind)= reshape(B_mult*uk, [], 1);
+            dLdt(self.C_bar_ind)= reshape(B_mult*, [], 1);
             dLdt(self.S_bar_ind)= (Phi_xi_tk\f_xi).';
             dLdt(self.z_bar_ind)= (Phi_xi_tk\z_xi).';
         end
@@ -111,7 +111,6 @@ classdef vehicle_dynamics
                 C_tau = reshape(lds_out(self.C_bar_ind), [self.m self.n]);
                 S_tau = lds_out(self.S_bar_ind);
                 z_tau = lds_out(self.z_bar_ind);
-                
                 % Fill in the next STM
                 self.A_bar(:,:,k) = A_tau;
                 self.B_bar(:,:,k) = A_tau*B_tau;
