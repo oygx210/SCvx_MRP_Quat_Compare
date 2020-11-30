@@ -34,14 +34,13 @@ cvx_begin quiet
 
     % Objective Function
     minimize( w_s*eta + w_nu*norm(nu, Inf) + w_dxu*delta_norm + w_ds*eta_norm )
+%     minimize( -x(1,K) + w_nu*norm(nu, Inf) + w_dxu*delta_norm + w_ds*eta_norm )
 
     % Constraints and Dynamics
     subject to
         % Constrain the initial and terminal conditions. Final Mass Free.
-        x(:,1)        == vehicle.X0;
-        x(2:end, end) == zeros(12,1);
-        
-        % Total vehicle mass should always be greater than dry mass.
+        x(:,1)      == vehicle.X0;
+        x(2:end, K) == vehicle.XT(2:end);
         x(1,:) >= vehicle.m_dry;
 
         % Dynamics
@@ -57,16 +56,21 @@ cvx_begin quiet
         end
         
         % Positive time
-        eta >= 0.1;
+        eta >= 0.0001;
         
-        % Compute State and Control Residuals wrt last step
+        % Trust Region Constraints
         delta_x = sum(x - x_last)*sum(x - x_last).';
         delta_u = sum(u - u_last)*sum(u - u_last).';
-        delta_eta = (eta - eta_last);
-        
-        % Trust Region Constraints (why tf is this not working)
         delta_x + delta_u    <= delta_norm;
+
+        delta_eta = (eta - eta_last);
         norm(delta_eta, Inf) <= eta_norm;
+        
+        % Original Way of doing these constraints
+        % delta_x = sum_square(x - x_last);
+        % delta_u = sum_square(u - u_last);
+        % norm(delta_x + delta_u, 1) <= delta_norm;
+        
         
         % Glideslope, Max Angle, Max Omega, Gimbal Angle, Upper Thrust,
         % Linearized Lower Thrust.
@@ -75,13 +79,12 @@ cvx_begin quiet
         for  k = 1:K
             % Check the order of NED here
             norm(x(2:3, k))   <= x(4,k)/vehicle.glideslope;
-            norm(x(11:13,k))  <= vehicle.omega_max;
+%             norm(x(11:13,k))  <= vehicle.omega_max;
             norm(x(8:10, k))  <= vehicle.tan_theta_max;
-            u_min_lin = (u_last(:, k)/norm(u_last(:, k))).' * u(:, k);
+            cos(vehicle.gimbal_max)*norm(u(:,k))  <= u(3, k);
+            u_min_lin = (u_last(:, k)./norm(u_last(:, k))).' * u(:, k);
             u_min_lin         >= vehicle.Fth_min;
 			norm(u(:,k))      <= vehicle.Fth_max;
-            % Check to make sure the thrust is on the Z axis here...
-			cos(vehicle.gimbal_max)*norm(u(:,k))  <= u(3, k);
         end
 
 cvx_end
@@ -89,7 +92,7 @@ cvx_end
 
 output_cvx.x = x;
 output_cvx.u = u;
-output_cvx.sigma = eta;
+output_cvx.eta = eta;
 output_cvx.delta_norm = delta_norm;
 output_cvx.sigma_norm = eta_norm;
 output_cvx.nu_norm = norm(nu, Inf);

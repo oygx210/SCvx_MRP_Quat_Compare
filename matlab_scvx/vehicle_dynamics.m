@@ -97,12 +97,13 @@ classdef vehicle_dynamics
         end
         
         function output_struct = discretized_dynamics(self, x, u, sigma)
-%             odesettings = odeset('AbsTol', 1E-12, 'RelTol', 1E-12);
+            odesettings = odeset('AbsTol', 1E-12, 'RelTol', 1E-12);
             for k = 1:self.K-1
                 % State history over all time (mx1 each step)
                 self.lds_0(self.x_ind) = x(:,k);
-                nldynamics = @(t, lds) self.RHS(t, self.lds_0, u(:,k), u(:,k+1), sigma);
-                lds_out = ode45(nldynamics, [0 self.dt], self.lds_0);
+                nldynamics = @(t, lds) self.RHS(t, lds, u(:,k), u(:,k+1), sigma);
+%               nldynamics = @(t, lds) self.RHS(t, self.lds_0, u(:,k), u(:,k+1), sigma);
+                lds_out = ode45(nldynamics, [0 self.dt], self.lds_0,odesettings);
                 lds_out = lds_out.y(:, end);
                 
                 % Pull ou the values and reshape them
@@ -111,6 +112,12 @@ classdef vehicle_dynamics
                 C_tau = reshape(lds_out(self.C_bar_ind), [self.m self.n]);
                 S_tau = lds_out(self.S_bar_ind);
                 z_tau = lds_out(self.z_bar_ind);
+                
+                A_tau(isnan(A_tau))=0;
+                B_tau(isnan(B_tau))=0;
+                C_tau(isnan(C_tau))=0;
+                S_tau(isnan(S_tau))=0;
+                z_tau(isnan(z_tau))=0;
                 
                 % Fill in the next STM
                 self.A_bar(:,:,k) = A_tau;
