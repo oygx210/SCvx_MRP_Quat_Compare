@@ -37,34 +37,24 @@
 \maketitle
 
 \begin{abstract}
-	This paper presents the formulation and demonstration of a 6 degree-of-freedom (DoF) free-final-time guidance algorithm which solves the canonical powered descent guidance (PDG) problem. It can be solved quickly to find a locally optimal solution and is tractable for implementation on real-time systems. Modified Rodrigues Parameters are employed as the primary attitude formalism, reducing the number of optimization variables and constraints that other formalisms may bring. The problem is solved subject to typical vehicular control, environmental, and mission geometry constraints.
+	This paper presents the formulation and demonstration of a 6 degree-of-freedom (DoF) free-final-time guidance algorithm which solves the canonical powered descent guidance (PDG) problem. This formulation can be quickly solved as a series of second order cone program (SOCP) sub-problem making it tractable for online implementation on real-time systems using Interior Point Method (IPM) solvers. Modified Rodrigues Parameters (MRPs), a reduced attitude formalism, are employed in this paper, reducing the number of optimization variables and constraints that other formalisms may bring. It can be initialized with a dynamically inconsistent trajectory and drives the solution to match the nonlinear dynamics with each iteration. This formulation also includes typical vehicular control, environmental, and mission geometry constraints such as thrust vector gimbal angle constraints, glide-slope constraints, and attitude constraints.
 
-
-
-
-	MORE WORK TO BE DONE HERE
 \end{abstract}
 
 
 \section{Introduction}
 \lettrine{T}{he} pin-point landing problem has been of significant interest for a variety of applications. These include safely landing scientific payloads and humans on other planets, returning them back to Earth, and in the reuse of launch vehicles. The capability of reuse of large rocket stages has already proven to be a fundamentally disruptive approach to the launching and has reduced the cost of getting to space \cite{jones2018recent}. Beyond this, landing safely near a base, refueling station, or scientific site will be a necessary technology for the continued exploration of our solar system. It is apparent that robust and reliable powered descent guidance routines will valuable for the future of our space transport infrastructure.
 
-. TODO
-.
-. need entry on the history with bunch of citations
-.
-.
+% Optimal control and guidance strategies are generally split into two categories: indirect and direct methods. Although the optimality of the indirect method can be guaranteed, solving the resulted two-point boundary value problem is a difficult task, and good initial guesses of the adjoint variables can be difficult to find or compute. The direct method does not require explicit derivation of first-order necessary conditions; instead, the original optimal control problem is approximated with a parameter optimization problem and solved using nonlinear programming (NLP) algorithms, such as sequential quadratic programming (SQP) algorithms. Although large-scale problems can be handled due to the development of NLP algorithms, the solution process is still time-consuming for complicated problems and dependent upon good initial guesses.
 
-TODO
-The convex optimization framework is exploited because it is amenable to real-time, on-board implementation and has guaranteed convergence properties with deterministic criteria. The convex programming algorithm to solve powered descent guidance presented herein has non-convex controls constraints and will be posed as a finite-dimensional second-order cone program (SOCP). SOCPs have low complexity and can be solved in polynomial time \cite{boyd2004convex}.
+Polynomial Guidance was famously used on the Apollo lunar lander, first landing astronauts on the moon in 1969. The Apollo guidance computer (AGC) had limited compute capability with the algorithms requiring manual re-targeting and flight by the mission pilot. This algorithm was an analytical solution to a boundary valued problem with a fixed time-to-go \cite{klumpp1974apollo}. The final braking law is represented by a quartic polynomial function which connect the initial and terminal states. This result does not satisfy vehicle thrust constraints, and errors introduced by this law must be compensated for by other calculations. Modified versions of this law are still in the literature with an outer time-of-flight search mechanism to effectively make it a free final time-to-go algorithm as well as adding in fuel optimality \cite{d1997optimal}.
 
-TODO
-This paper focuses on the implementation and development of a 6 degree-of-freedom (DoF) guidance algorithm that solves the non-convex nonlinear powered descent guidance (PDG) problem. A method called successive convexification or SCvx, championed by \cite{mao2016successive}, is employed. In this method, the algorithm is initialized with a reference trajectory, then linearized and discretized as an SOCP problem. The problem is then structured as an iterative solution process where the current problem is linearized about the previous trajectory. This is done in such a way that the solution satisfies the original nonlinear dynamics, non-convex constraints, and other state and control constraints. On each iteration, the dynamic relaxation weights are tightened to adhere closer to the true dynamics.
+Lossless Convexification was developed to produce a perfect convex second order cone program (SOCP) sub-problem from an originally non-convex problem statement. It is used for convexifying a non-convex constraint without losing any precision, provable via Pontryagin's maximum principle. This method, developed by Açikmeşe, Ploen, and Blackmore is at the heart of the G-FOLD landing algorithm \cite{blackmore2010minimum} \cite{accikmecse2011lossless} \cite{acikmese2012g}. The Guidance algorithm for Fuel Optimal Large Diverts, or G-FOLD, is a recent advancement in PDG solutions. It very quickly calculates a 3DoF fuel optimal divert maneuver with free-final-time, inequality and equality constraints on the states and inputs, and losslessly convexifying the lower thrust constraint. The routine solves a SOCP problem iteratively with an outer time of flight search loop to find the optimal final time. This was successfully demonstrated in a family of flight experiments on Masten Space landing vehicles \cite{acikmese2013flight} \cite{scharf2014adapt}. Similar kinds of problem structures are becoming more popular in aerospace guidance and control \cite{LiuSurvey2017} \cite{wang_paper}. Unfortunately, only a couple types of constraint can be convexified in this fashion, where the remaining nonlinear dynamics are the primary sources of non-convexity.
 
+In this paper, the convex optimization framework is exploited because it is amenable to real-time, on-board implementation and has guaranteed convergence properties with deterministic criteria. The convex programming algorithm to solve powered descent guidance presented herein has non-convex controls constraints and will be posed as a finite-dimensional second-order cone program (SOCP). SOCPs have low complexity and can be solved in polynomial time \cite{nesterov1994interior} \cite{boyd2004convex}.
+A method called successive convexification or SCvx, championed by \cite{mao2016successive}, is employed. In this method, the algorithm is initialized with a reference trajectory, then linearized and discretized as an SOCP problem. The problem is then structured as an iterative solution process where the current problem is linearized about the previous trajectory. This is done in such a way that the solution satisfies the original nonlinear dynamics, non-convex constraints, and other state and control constraints. On each iteration, the dynamic relaxation weights are tightened to adhere closer to the true dynamics.
 
-The goal of the presented algorithm is to generate optimal translational and attitude trajectory profiles that are dynamically feasible and amenable. This means that the modeled vehicle should abide by all state boundary conditions, actuator constraints, and the proposed dynamics. This problem will first be defined as a continuous-time non-convex dynamical problem and then converted to a disciplined convex program. The dynamic, control, initial, and terminal constraints that must be met throughout the problem will also be discussed and derived.
-
-In order to maximize the divert capability of the vehicle, an objective of minimizing the final time of the solution is proposed. Although not proven here, this can be considered a proxy to the minimum-fuel consumption problem, as the non-convex constraint of minimum-thrust and single-ignition requires that the engine be on for the duration of the landing phase. In this scenario, the fuel-consumption cost is strictly increasing monotonic, and the sooner the terminal conditions can be met, the fewer the total cost. A similar free-ignition-time modification can be made to further decrease this cost and  optimize the ignition time \cite{szmuk2019successive}. 
+The goal of the presented algorithm is to generate optimal translational and attitude trajectory profiles that are dynamically feasible. This means that the modeled vehicle should abide by all state boundary conditions, actuator constraints, and the proposed dynamics. This problem will first be defined as a continuous-time non-convex dynamical problem and then converted to a disciplined convex program. The dynamic, control, initial, and terminal constraints that must be met throughout the problem will also be discussed and derived. In order to maximize the divert capability of the vehicle, an objective of minimizing the final time of the solution is proposed. Although not proven here, this can be considered a proxy to the minimum-fuel consumption problem, as the non-convex constraint of minimum-thrust and single-ignition requires that the engine be on for the duration of the landing phase. In this scenario, the fuel-consumption cost is strictly increasing monotonic, and the sooner the terminal conditions can be met, the fewer the total cost. A similar free-ignition-time modification can be made to further decrease this cost and  optimize the ignition time \cite{szmuk2019successive}. 
 
 
 \subsection{On Successive Convexification}
@@ -72,7 +62,7 @@ The successive convexification framework (SCvx) is able to quickly solve optimal
 
 For general real-time autonomy tasks where safety and determinism are prioritized, it is often much better to find a locally optimal solution quickly rather than a globally optimal solution slowly. Generally speaking, nonlinear programming tends to be the method of choice for locally optimal solutions. However, their convergence behaviour is dependent upon the initial guess provided to the solver and do not offer bounds on computational effort required for convergence. These facts are at odds with requirements for real-time embedded applications.
 
-One then may turn to convex optimization methods which can be reliably solved in polynomial time \cite{nesterov1994interior}. Sequential convex programming (SCP) offers a way to solve problems with more general nonlinear dynamics and non-convex constraints. While SCP performs well empirically, no general convergence results have been reported. SCvx differs from other SCP approaches in many ways, including proofs for (weak and strong) global convergence and superlinear convergence rate \cite{mao2016successive}.
+One then may turn to convex optimization methods which can be reliably solved, especially with custom solvers \cite{dueri2014automated}. Sequential convex programming (SCP) offers a way to solve problems with more general nonlinear dynamics and non-convex constraints. While SCP performs well empirically, no general convergence results have been reported. SCvx differs from other SCP approaches in many ways, including proofs for (weak and strong) global convergence and superlinear convergence rate \cite{mao2016successive}.
 
 \subsection{Definitions and Notation}
 The $\mathcal{F}_\mathcal{N} : \{\mathcal{O}_\mathcal{N}, \hat{\bm{n}}_1, \hat{\bm{n}}_2, \hat{\bm{n}}_3 \}$ frame defines an inertially fixed Up-East-North reference frame where the origin $\mathcal{O}_\mathcal{N}$ located at the landing site. This can easily be changed to the local-vertical local-horizontal (LVLH) or other useful frame definition. The $\mathcal{F}_\mathcal{B}: \{\mathcal{O}_\mathcal{B}, \hat{\bm{b}}_1, \hat{\bm{b}}_2, \hat{\bm{b}}_3 \}$ frame is a body fixed frame where the x-axis is aligned vertically with the vehicle, or aligned with the thrust vector at zero thrust vector control (TVC) deflection angle. The Y-axis points out of the side of the cylindrical vehicle and the Z-axis completes the right handed triad.
@@ -102,7 +92,7 @@ With the assumptions made, the translational dynamics and forces acting on the v
 where $\mathbf{g}$ is the static, spherical planetary gravitation vector. As stated previously, any extra nonlinear terms can be added to this formulation and they will be solved exactly. This may become useful in the hypersonic entry, supersonic retropropulsive, or any perturbing regimes. Moving forward, the translational dynamics are assumed to be in the inertial frame and all rotational dynamics to be in the body fixed frame.
 
 \subsection{Attitude Dynamics and Formalism}
-In this formulation, the vehicle is treated as a rigid body, although solutions with non-rigid structures could be readily supported. From Euler's principal rotation theorem,  any coordinate reference frame can be brought from an arbitrary initial condition to an arbitrary final orientation by a single rigid rotation through a principle angle $\phi$ about a principal axis $\hat{\bm{e}}$. This axis is fixed in both the initial and final orientation. Therefore $\hat{\bm{e}} = [C]\hat{\bm{e}}$, where $[C]\in SO(3)$ is a rotation mapping in $\mathbb{R}^{3\times3}$ taking a vector from the initial orientation to the final, shows that $\hat{\bm{e}}$ is an unit eigenvector of the $[C]$ transform whose eigenvalue is $+1$. This rotation mapping matrix, a direction cosine matrix (DCM), has nine parameters and can be cumbersome although exact. For ease of manipulation, it is preferred to use mappings with fewer parameters. The right-handed $SO(3)$ group DCM has a determinant $+1$ with inverse/transpose both being the inverse mapping: $[\mathcal{B}\mathcal{N}]^T = [\mathcal{N}\mathcal{B}] = [\mathcal{N} \leftarrow \mathcal{B}]$. Similarly, they can be multiplied to encode compound rotations, say, from sensor frame to body frame to inertial.
+In this formulation, the vehicle is treated as a rigid body. From Euler's principal rotation theorem,  any coordinate reference frame can be brought from an arbitrary initial condition to an arbitrary final orientation by a single rigid rotation through a principle angle $\phi$ about a principal axis $\hat{\bm{e}}$. This axis is fixed in both the initial and final orientation. Therefore $\hat{\bm{e}} = [C]\hat{\bm{e}}$, where $[C]\in SO(3)$ is a rotation mapping in $\mathbb{R}^{3\times3}$ taking a vector from the initial orientation to the final, shows that $\hat{\bm{e}}$ is an unit eigenvector of the $[C]$ transform whose eigenvalue is $+1$. This rotation mapping matrix, a direction cosine matrix (DCM), has nine parameters and can be cumbersome although exact. For ease of manipulation, it is preferred to use mappings with fewer parameters.
 
 \subsubsection{Modified Rodrigues Parameters}
 Another minimal attitude formalism are the Modified Rodrigues Parameters (MRPs). 
@@ -148,7 +138,7 @@ Similarly, the terminal state boundary constraint is the following:
 \begin{align}
 	\quad ^\mathcal{N}\mathbf{r}(0) = \mathbf{0}, \quad ^\mathcal{N}\mathbf{v}(0) = \mathbf{0}, \quad \boldsymbol{\sigma}_\mathcal{B/N}(0) = \mathbf{0}, \quad  ^\mathcal{B}\boldsymbol{\omega}_\mathcal{B/N}(0) = \mathbf{0}
 \end{align}
-leaving the final mass unconstrained and assuming the landing site to be the origin. An upright attitude is also assumed, given that the vehicle has landing hardware. Of course these can be modified to fit arbitrary landing requirements. The problem proposed in \cite{szmuk2018successive} does not constrain the initial attitude of the vehicle, but it is constrained in this formulation. There is good reason to leave this unconstrained, as the optimization would have less variables to include and would therefore reduce computation time. Additionally, it may not be a bad assumption as the attitude control bandwidth is normall larger than the translational control bandwidth.
+leaving the final mass unconstrained and assuming the landing site to be the origin. An upright attitude is also assumed, given that the vehicle has landing hardware in this orientation. Of course these can be modified to fit arbitrary landing requirements. The problem proposed in \cite{szmuk2018successive} does not constrain the initial attitude of the vehicle, but it is constrained in this formulation. It may not be a bad assumption as the attitude control bandwidth is normally larger than the translational control bandwidth in addition to minimizing the number of system constraints.
 
 Now, let us look at the state constraints that must be met. The vehicle propulsion system is limited in fuel which manifests itself as this inequality constraint:
 \begin{align}
@@ -183,11 +173,11 @@ this selects the $(1,1)$ element of the MRP-to-DCM matrix in equation \ref{mrp2c
 \label{alignconstraint}
 	1- \frac{8(\sigma_2^2 + \sigma_3^2)}{(1+\sigma^2)^2} \geq \cos{\psi_{max}}
 \end{align}
-This quaternion version of this same constraint is $1-2(q_{2}^{2}+q_{3}^{2}) \geq \cos(\psi_{max})$. The quaternion unity identity must be used in this derivation. The quaternion definition is convex, but the MRP version is not. However, this issue can be circumnavigated by using the direct MRP identity $\boldsymbol{\sigma}_\mathcal{B/N} = \tan\frac{\phi}{4}\hat{\bm{e}}$. Therefore, the entire MRP can be constrained such that the vehicle does not exceed $\psi_{max}$ radians in total angular displacement from the zero angle. The zero MRP is defined as the upward unit vector in the target inertial frame.
+This quaternion version of this same constraint is $1-2(q_{2}^{2}+q_{3}^{2}) \geq \cos(\psi_{max})$. The quaternion unity identity must be used in this derivation. The quaternion definition is convex, but the MRP version is not. However, this issue can be circumnavigated by using the direct MRP identity $\boldsymbol{\sigma}_\mathcal{B/N} = \tan\frac{\phi}{4}\hat{\bm{e}}$. Therefore, the entire MRP can be constrained such that the vehicle does not exceed $\psi_{max}$ radians in total angular displacement from the zero angle, which will suffice for our application. The zero MRP is defined as the upward unit vector in the target inertial frame.
 \begin{align}
 	\left \lVert \boldsymbol{\sigma}_\mathcal{B/N} (t) \right \lVert_2 \leq \tan \left( \frac{\psi_{max}}{4} \right)
 \end{align}
-Nominally the vehicle should not have large angular rates throughout the descent and landing. This can simply be constrained as well.
+Most divert maneuvers should have relatively small angular rates, and can be bounded for descent and landing. This can simply be constrained as well.
 \begin{align}
 & \left \lVert \bm{\omega}_\mathcal{B/N}(t) \right \lVert_2 \leq \omega_{max}
 \end{align}
@@ -205,7 +195,7 @@ It is clear that the upper thrust bound is convex. However, the lower bound crea
 Putting this all together, let us pose the continuous time optimization problem. In this form, it is non-convex and requires conditioning to work into the convex programming framework. As stated, the objective is to minimize the time-of-flight required to get to the terminal conditions subject to the aforementioned constraints, dynamics, and boundary conditions. The state vector, thrust commands, gimbal angles, and final time are optimization variables and are considered the solution to this problem. This is posed in Problem one: \ref{ctproblem}.
 
 
-
+\clearpage
 \begin{mdframed}
 \label{ctproblem}
 \textbf{Problem 1: Continuous Time Non-Convex Free-Final-Time}
@@ -252,7 +242,7 @@ m_{dry} - m(t) & \leq 0 \\
 
 \section{Linearization}
 Now the convex form of Problem 1 shall be derived. The non-convex continuous free-final-time problem is converted into a convex fixed-final-time problem. This will be a second order cone sub-problem. This sub-problem is solved repeatedly to convergence or ``successively.'' This successive process turns each subproblem into a larger free-final-time algorithm.
-Let us define the state vector $\mathbf{x}(t) \in \mathbb{R}^{14\times 1}$ and our control vector $\mathbf{u}(t) \in \mathbb{R}^{3\times 1}$:
+Let us define the state vector $\mathbf{x}(t) \in \mathbb{R}^{13\times 1}$ and our control vector $\mathbf{u}(t) \in \mathbb{R}^{3\times 1}$:
 \begin{align}
 & \mathbf{x}(t) \triangleq 
 	\begin{bmatrix}
@@ -279,7 +269,7 @@ Let us now translate between the two by using the dilation coefficient $\eta$ wh
 
 This $\eta$ will become a variable in the convex subproblem that acts as the non-dimensionalized final time. It is a scaling factor that translates between real work differential time and the normalized version used for our algorithm. The nonlinear dynamics, taking advantage of this normalized time, are then written as:
 \begin{align}
-& \mathbf{x}^\prime(\tau) \triangleq \frac{d}{d\tau}\mathbf{x}(\tau) = \eta \mathbf{f}(\mathbf{x}(\tau), \mathbf{u}(\tau)) = \mathbf{g}(\mathbf{x}(\tau), \mathbf{u}(\tau), \eta)
+& \mathbf{x}^\prime(\tau) \triangleq \frac{d}{d\tau}\mathbf{x}(\tau) = \eta \  \mathbf{f}(\mathbf{x}(\tau), \mathbf{u}(\tau)) = \mathbf{g}(\mathbf{x}(\tau), \mathbf{u}(\tau), \eta)
 \end{align}
 
 Taking a first-order Taylor series approximation of the nonlinear dynamics proposed in problem one (\ref{ctproblem}), a linear time-varying system of equations is written to use in our algorithm shown in \ref{taylor}. These dynamics will be instantiated at reference values $(\hat{\mathbf{x}}, \hat{\mathbf{u}}, \hat{\eta})$ at each time, together being referred to as the \textit{linearization path}. 
@@ -383,12 +373,12 @@ for arbitrary timing parameters $t, \gamma, s$. Let us take advantage of this pr
 \end{align}
 Integration leads to the following fact:
 \begin{align}
-	\mathbf{x}(\xi) &= \mathbf{x}(\tau_k) + \int_{\tau_k}^\xi A(\xi) \Phi(\xi, \tau_k) \mathbf{x}(\tau_k) d\xi \\
-	&= \left( \mathbb{I}_{n\times n} + \int_{\tau_k}^\xi A(\xi) \Phi(\xi, \tau_k) d\xi \right)  \mathbf{x}(\tau_k)
+	\mathbf{x}(\xi) &= \mathbf{x}(\tau_k) + \int_{\tau_k}^\xi A(\lambda) \Phi(\lambda, \tau_k) \mathbf{x}(\tau_k) d\lambda \\
+	&= \left( \mathbb{I}_{n\times n} + \int_{\tau_k}^\xi A(\lambda) \Phi(\lambda, \tau_k) d\lambda \right)  \mathbf{x}(\tau_k)
 \end{align}
 Therefore the arbitrary state transition mapping from time $\tau_k$ to $\xi$ can be represented as the following:
 \begin{align}
-	\Phi(\xi, \tau_k) = \mathbb{I}_{n\times n} + \int_{\tau_k}^\xi A(\xi) \Phi(\tau, \tau_k) d\xi, \quad \forall \xi \in \ [\tau_k, \tau_{k+1}]
+	\Phi(\xi, \tau_k) = \mathbb{I}_{n\times n} + \int_{\tau_k}^\xi A(\lambda) \Phi(\lambda, \tau_k) d\lambda, \quad \forall \xi \in \ [\tau_k, \tau_{k+1}]
 \end{align}
 
 Recall our continuous LTV system dynamics expression $\mathbf{x}^\prime(\tau) =  A(\tau)\mathbf{x} + B(\tau)\mathbf{u} + \mathbf{z}(\tau) + \Sigma(\tau)\eta$. Employing our control FOH, let us form this as the following discrete time system:
@@ -414,7 +404,12 @@ Converting the continuous time dynamics to discrete time dynamics, a series of c
 \end{align}
 \end{subequations}
 
-It should be noted that the number of temporal nodes $K$ chosen for this calculation, where $\mathcal{K} \in \mathbb{Z}^K$, does not affect the accuracy of the solution. While the solution is accurate to the problem statement, it may be suboptimal by a small amount to the same problem evaluated at a higher node count $K$. This is visited in the analysis section later in this report; it is shown that, for a typical landing problem, the difference in key objectives is inconsequential. More simply put, an optimization solution where $K=10$ will still accurately land the vehicle within all the constraints defined, but may do so in more time and with larger cost than the same problem solved at $K=25$. However, the former is computed faster and often produces a total cost marginally higher than the better resolution problem. Note that these are effectively two different problems despite having similar objective and constraint formulation.
+When numerically integrating these functions to compute the discrete system dynamics matrices, it may become useful to stack their integrands as such where each block is pre-multiplied with $\Phi(\tau_{k}, \xi)$ or the STM computed from the prior step, and then multiplied by the $F_k$ STM again after integration. Note that we must also integrate the STM differential equation we derived above as well as our nonlinear dynamics to generate terms like $\Sigma(\xi)$. It is beneficial to create anonymous functions from symbolic expressions in this case to make the operation less cumbersome.
+\begin{align}
+	F_k \int_{\tau_k}^{\tau_{k+1}} \Phi(\tau_{k}, \xi) \  [ \alpha_k(\xi)B(\xi) \ \ \beta_k(\xi)B(\xi) \ \ \Sigma(\xi) \ \ \mathbf{z}(\xi)   ]^T d\xi
+\end{align}
+
+It should be noted that the number of temporal nodes $K$ chosen for this calculation, where $\mathcal{K} \in \mathbb{Z}^K$, does not affect the accuracy of the solution. While the solution is accurate to the problem statement, it may be suboptimal by a small amount to the same problem evaluated at a higher node count $K$. More simply put, an optimization solution where $K=10$ will still accurately land the vehicle within all the constraints defined, but may do so in more time and with larger cost than the same problem solved at $K=25$. However, the former is computed faster and often produces a total cost marginally higher than the better resolution problem. Note that these are effectively two different problems despite having similar objective and constraint formulation.
 
 \section{Successive Form, Trust Regions and Relaxations}
 
@@ -431,12 +426,10 @@ Let us then fabricate the following constraints with $\bm{\bar{\Delta}}^i \in \m
 & \delta \eta^i \cdot \delta \eta^i \leq \Delta_\eta^i
 \end{align}
 
-Now $w_\Delta^i \norm{{\bar{\Delta}}^i} + w_{\Delta_\eta} ||\Delta_\eta^i ||$ is appended to the cost function to minimize input, state, and final time deviations and keeping their deviation bounded via constraint, where $w_\Delta^i$ and $w_{\Delta_\eta}$ are weighting scalars depending on the preferences of the scenario. Because the norm is bounded, these are considered soft constraints.
-
-Given that the trust regions are centered about previous points $(\mathbf{x}_{k}^{i-1},\mathbf{u}_{k}^{i-1},\eta^{i-1})$, the Jacobian must be evaluated about the nonlinear trajectory beginning at $\mathbf{x}_{k}^{i-1}$. Then the FOH input vector $\mathbf{u}(\tau)$ is used. Doing this $\forall k \in \mathcal{K}$ defines the aforementioned linearization path $(\hat{\mathbf{x}}, \hat{\mathbf{u}}, \hat{\eta})$. 
+Now $w_\Delta^i \norm{{\bar{\Delta}}^i} + w_{\Delta_\eta} ||\Delta_\eta^i ||$ is appended to the cost function to minimize input, state, and final time deviations and keeping their deviation bounded via constraint, where $w_\Delta^i$ and $w_{\Delta_\eta}$ are weighting scalars depending on the preferences of the scenario. Because the norm is bounded, these are considered soft constraints. Given that the trust regions are centered about previous points $(\mathbf{x}_{k}^{i-1},\mathbf{u}_{k}^{i-1},\eta^{i-1})$, the Jacobian must be evaluated about the nonlinear trajectory beginning at $\mathbf{x}_{k}^{i-1}$. Then the FOH input vector $\mathbf{u}(\tau)$ is used. Doing this $\forall k \in \mathcal{K}$ defines the aforementioned linearization path $(\hat{\mathbf{x}}, \hat{\mathbf{u}}, \hat{\eta})$. 
 
 
-Dynamic relaxation variable can now be added to discount artificial infeasibility. This is encountered during the convergence process when the linearization becomes infeasible. For example, if the dynamics are linearized about unrealistic conditions, the problem becomes dynamically inconsistent and will not produce solution. The control is modified such that subproblem solutions are guaranteed to have non-empty feasible sets. This is encountered during the first couple iterations of a successive convexification due to poor initial trajectory or time-of-flight estimation. To get rid of this issue, dynamic relaxation is employed, where a slack variable is added to the dynamics in order to ``make room'' for the iteration to proceed. This can also be thought of as a virtual control or dynamic padding. However, one can guess that this will inevitably be something to minimize in the cost function in order to make sure that our final trajectories are as dynamically consistent as possible. Therefore, let us now write our dynamics as follows: 
+Dynamic relaxation variable can now be added to discount artificial infeasibility. This is encountered during the convergence process when the linearization becomes infeasible. For example, if the dynamics are linearized about unrealistic conditions, the problem becomes dynamically inconsistent and will not produce a feasible solution. The control is modified such that subproblem solutions are guaranteed to have non-empty feasible sets. This is encountered during the first couple iterations of a successive convexification due to poor initial trajectory or time-of-flight estimation. To get rid of this issue, dynamic relaxation is employed, where a slack variable is added to the dynamics in order to ``make room'' for the iteration to proceed. This can also be thought of as a virtual control or dynamic padding. However, one can guess that this will inevitably be something to minimize in the cost function in order to make sure that our final trajectories are as dynamically consistent as possible. Therefore, let us now write our dynamics as follows: 
 %
 \begin{align}
 & \mathbf{x}_{k+1}^i = F_k^i\mathbf{x}_k^i + G^{-,i}_k\mathbf{u}_k^i + G_k^{+,i}\mathbf{u}_{k+1}^i + \bar{\mathbf{z}}^i_k +\bar{\Sigma}_k^i\eta^i + \bm{\nu}_k^i
@@ -453,10 +446,11 @@ As $\bm{\nu}$ will be in the augmented cost function, the following virtual cont
 
 The cost function is augmented again with $w_v \norm{\bm{\nu}^i}_1$ so that the magnitude of the entire history of $\bm{\nu}$ is penalized. As the iteration continues, this value is minimized, making the solution more dynamically feasible and true to the linear system. Additionally, the magnitude of this norm is indicative of a final solution in the successive iteration process.
 
+\clearpage
 \section{Convex Sub-Problem}
 Now that the proposed problem has been linearized and convexified, the components can be assembled as the full free-final-time problem as shown in problem \ref{problem2} where the following objective function is used:
 \begin{align}
-	\min_{\eta^i, \mathbf{u}_k^i} \quad \eta^i + w_\Delta^i || \bm{\bar{\Delta}}^i ||_2 + w_{\Delta_\eta} || \Delta_\eta^i ||_1 + w_v || \bar{\bm{\nu}}^i ||_1
+	\min_{\eta^i, \mathbf{u}_k^i} \quad w_\eta \eta^i + w_\Delta^i || \bm{\bar{\Delta}}^i ||_2 + w_{\Delta_\eta} || \Delta_\eta^i ||_1 + w_v || \bar{\bm{\nu}}^i ||_1
 \end{align}
 
 The goal is for the successive convexification algorithm \ref{Successive} to continue iterating until $\Delta_{tol}$ and $\nu_{tol}$ are met. These are compared to by the magnitude of each vector and are checked at the end of each iteration of the routine. Additionally, to ensure boundedness on the trust regions and to prevent an admitted unbounded cost, the cost weighting of the trust regions is increased after each iteration.
@@ -465,21 +459,22 @@ The goal is for the successive convexification algorithm \ref{Successive} to con
 \caption{Successive Convexification}\label{Successive}
 \begin{algorithmic}[1]
 \Procedure{PDG\_SCvx}{$x_{ref}, u_{ref}, \eta_{ref}$}
-\State An initial reference trajectory must be generated, as a linearization path for the first iterate of SCVx. In this prototype case, a simple routine which linearly spans many states from initial to terminal condition is performed, although it is recommended to use a more sophisticated approach. The following is used in this demonstration:
-\For{$k$ $\in$ $(1:K)$}
-\State		$a_1 = (K-k)/K;$
-\State		$	a_2 = k/K;$
-\State		$	m_k = (a_1*m_0 + a_2*m_K)$
-\State		$	r_k = (a_1*r_0 + a_2*r_K)$
-\State		$	v_k = (a_1*v_0 + a_2*v_K)$
-\State		$	\sigma_k = [0 \ 0 \ 0]^T$
-\State		$	\omega_k = [0 \ 0 \ 0]^T$
-\State		$	\mathbf{x}[:, k] = [m_k \ r_k \ v_k \ \sigma_k  \ \omega_k]^T$
-\State		$	\mathbf{u}[:, k] = -\mathbf{g} * m_k$
-\EndFor{}
+\State An initial reference trajectory must be generated, as a linearization path for the first iterate of SCVx. It is recommended to generate a sophisticated trajectory a priori, but for our case 
+ In this prototype case, a simple routine which linearly spans many states from initial to terminal condition is performed, although it is recommended to use a more sophisticated approach.
+% \For{$k$ $\in$ $(1:K)$}
+% \State		$a_1 = (K-k)/K;$
+% \State		$	a_2 = k/K;$
+% \State		$	m_k = (a_1*m_0 + a_2*m_K)$
+% \State		$	r_k = (a_1*r_0 + a_2*r_K)$
+% \State		$	v_k = (a_1*v_0 + a_2*v_K)$
+% \State		$	\sigma_k = [0 \ 0 \ 0]^T$
+% \State		$	\omega_k = [0 \ 0 \ 0]^T$
+% \State		$	\mathbf{x}[:, k] = [m_k \ r_k \ v_k \ \sigma_k  \ \omega_k]^T$
+% \State		$	\mathbf{u}[:, k] = -\mathbf{g} * m_k$
+% \EndFor{}
 \While{$ ||{\Delta}|| \geq \Delta_{tol} \quad \&\& \quad ||{\nu}|| \geq \nu_{tol} \quad \&\& \quad i \leq i_{max}$}
-\State Compute $\bar{A}_k^{i-1}, \bar{B}_k^{i-1}, \bar{C}_k^{i-1}, \bar{\Sigma}_k^{i-1}, \bar{z}_k^{i-1}$ from $\mathbf{x}_k^{i-1}, \mathbf{u}_k^{i-1}, \eta^{i-1}$
-\State Solve \textit{Problem 2} using $\mathbf{x}_k^{i-1}, \mathbf{u}_k^{i-1}, \eta^{i-1}, \bar{A}_k^{i-1}, \bar{B}_k^{i-1}, \bar{C}_k^{i-1}, \bar{\Sigma}_k^{i-1}, \bar{z}_k^{i-1}$
+\State Compute $F_k^{i-1}, G_k^{-,i-1}, G_k^{+,i-1}, \bar{\Sigma}_k^{i-1}, \bar{\mathbf{z}}_k^{i-1}$ from $\mathbf{x}_k^{i-1}, \mathbf{u}_k^{i-1}, \eta^{i-1}$
+\State Solve \textit{Problem 2} using $\mathbf{x}_k^{i-1}, \mathbf{u}_k^{i-1}, \eta^{i-1}, F_k^{i-1}, G_k^{-,i-1}, G_k^{+,i-1}, \bar{\Sigma}_k^{i-1}, \bar{\mathbf{z}}_k^{i-1}$
 \State Store the newly found $\mathbf{x}_k^{i}, \mathbf{u}_k^{i}, \eta^{i}$ as linearization path for the next iterate.
 \State $w^{i+1}_\Delta = 1.7*w^{i}_\Delta$
 \If{$i > i_\nu \quad \& \& \quad ||{\nu}|| > \nu_{infeasible}$ }
@@ -488,11 +483,10 @@ The goal is for the successive convexification algorithm \ref{Successive} to con
 \EndIf
 \State $i++;$
 \EndWhile 
-\State \textbf{return} $\mathbf{x}, \mathbf{u}$
+\State \textbf{return} $\mathbf{x}, \mathbf{{}u}$
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
-
 
 
 \clearpage
@@ -501,7 +495,7 @@ The goal is for the successive convexification algorithm \ref{Successive} to con
 \textbf{Problem 2: Discretized Convex Fixed-Final-Time Sub-Problem ($i^{th}$ iteration)}
 \underline{Cost Function:}
 \begin{equation*}
-\min_{\eta^i, \mathbf{u}_k^i} \quad \eta^i + w_\Delta^i || \bm{\bar{\Delta}}^i ||_2 + w_{\Delta_\eta} || \Delta_\eta^i ||_1 + w_v || \bar{\bm{\nu}}^i ||_1
+\min_{\eta^i, \mathbf{u}_k^i} \quad w_\eta \eta^i + w_\Delta^i || \bm{\bar{\Delta}}^i ||_2 + w_{\Delta_\eta} || \Delta_\eta^i ||_1 + w_v || \bar{\bm{\nu}}^i ||_1
 \end{equation*}
 %
 \underline{Boundary Conditions:}  
@@ -550,7 +544,7 @@ F_{min} &\leq \Xi_k^i\mathbf{u}_k^i \\
 % ##############################################################################
 % ###############################################################################
 \section{Planar Problem Solutions}
-Let us first study a case where the vehicle has a velocity in-plane with the terminal condition, allowing one dimension of motion to be neglected. This is the nominal scenario where a vehicle is coming in for landing and has pre-conditioned its state to do so. This is apparent in the landing of first stages, where the out-of-plane motion is canceled as much as possible and an in-plane maneuver is performed to adjust the vehicle to meet the landing pad. Figure \ref{fig:planar} shows the SCvx guidance solution to a problem with a set of initial conditions in-plane with the landing point; the vehicle has a position of 600 meters North and 500 meters east with eastward velocity of -120m/s. The incoming velocity is higher than nominal, and so the optimal control solution is to maximize the divert capability such that the lateral velocity is arrested while the attitude is upright at the final time.
+We shall first study a case where the vehicle has a velocity in-plane with the terminal condition, allowing one dimension of motion to be neglected. This is the nominal scenario where a vehicle is coming in for landing and has pre-conditioned its state to do so. This is apparent in the landing of first stages, where the out-of-plane motion is canceled as much as possible and an in-plane maneuver is performed to adjust the vehicle to meet the landing pad. Figure \ref{fig:planar} shows the SCvx guidance solution to a problem with a set of initial conditions in-plane with the landing point; the vehicle has a position of 600 meters North and 500 meters east with eastward velocity of -120m/s. The incoming velocity is higher than nominal, and so the optimal control solution is to maximize the divert capability such that the lateral velocity is arrested while the attitude is upright at the final time. This problem uses the routine depicted in in Algorithm \ref{Successive} using the CVXpy package and the ECOS \cite{domahidi2013ecos} solver.
 
 \begin{table}[ht]
 \caption{Parameters Used For Planar Problem}
@@ -590,7 +584,7 @@ $U_T$             & s       & $3.132$ \\[1ex]
 
 \begin{figure}[!htbp] 
   \centering
-  \includegraphics[width=\textwidth]{figs/planar_traj.eps}
+  \includegraphics[width=0.75\textwidth]{figs/planar_traj.eps}
   \caption{Planar Guidance Problem: Vehicle Descends In-line with Target}
   \label{fig:planar}
  \end{figure}
@@ -598,28 +592,28 @@ $U_T$             & s       & $3.132$ \\[1ex]
 \begin{figure}[!htbp] 
 \label{planar_controls}
   \centering
-  \includegraphics[width=\textwidth]{figs/planar_controls.eps}
+  \includegraphics[width=0.65\textwidth]{figs/planar_controls.eps}
   \caption{Planar Guidance Problem: Control and Angular Rate During Landing}
   \label{fig:planarcontrols}
  \end{figure}
 
 \begin{figure}[!htbp] 
   \centering
-  \includegraphics[width=\textwidth]{figs/planar_alignment.eps}
-  \caption{Planar Guidance Problem: Total Alignment Constraint Met}
+  \includegraphics[width=0.7\textwidth]{figs/planar_alignment.eps}
+  \caption{Planar Guidance Problem: Total Alignment}
   \label{fig:nplanar_align}
  \end{figure}
 
 
  %
-The control solution in figure \ref{fig:planarcontrols} shows how maximum thrust is used for nearly the entire duration where lateral thrust is used for attitude control while simultaneously lowering altitude control. The commanded TVC deflection angles stay within our proposed constraints. Our thrust magnitude and angular rate constraints are also met throughout the duration of the flight. For a fast pitch-over maneuvers like this, it is hard to find a trajectory where the vehicle angular rate maintains within reasonable boundaries; this scenario is restricted to below $14$ deg/s. All initial conditions and constraints are shown in \ref{table:tableplanar}.
+The control solution in Figure \ref{fig:planarcontrols} shows how maximum thrust is used for nearly the entire duration where lateral thrust is used for attitude control while simultaneously lowering altitude control. The commanded TVC deflection angles stay within our proposed constraints. Our thrust magnitude and angular rate constraints are also met throughout the duration of the flight. For a fast pitch-over maneuvers like this, it is hard to find a trajectory where the vehicle angular rate maintains within reasonable boundaries; this scenario is restricted to below $14$ deg/s. All initial conditions and constraints are shown in Figure \ref{table:tableplanar}.
 
 
-The vehicle following the planar path in figure \ref{fig:planar} reached it's terminal state after $22.4$ seconds and with a final mass of $373.62$kg with a starting mass of $408.23$kg only using $11.7$\% of it's fuel. Additionally, the total alignment MRP constraint is shown to meet the requirement throughout the flight \ref{fig:nplanar_align}.
+The vehicle following the planar path in Figure \ref{fig:planar} reached it's terminal state after $22.4$ seconds and with a final mass of $373.62$kg with a starting mass of $408.23$kg only using $11.7$\% of it's fuel. Additionally, the total alignment MRP constraint is shown to meet the requirement throughout the flight in Figure \ref{fig:nplanar_align}.
 
 
 \section{Non-Planar Problem Solutions}
-Now let us look at a non-planar problem where the initial condition of the vehicle is off-nominal and must make an out-of-plane maneuver to land on the target. The parameters and initial conditions are found in table \ref{table:tablenplanar}. Figure \ref{fig:nplanar} shows a vehicle coming towards the landing pad with an offset lateral position of 100m and with a velocity not pointed directly in-line with the target. All vehicle constraints are met. The vehicle uses maximum thrust almost the entire duration of the flight. The optimization provides a thrust-vectored solution which precisely arrests the attitude motion while meeting the translational requirements simultaneously. The simple MRP alignment constraint is met and shown in figure \ref{fig:nplanarcontrols}.
+Now let us look at a non-planar problem where the initial condition of the vehicle is off-nominal and must make an out-of-plane maneuver to land on the target. The parameters and initial conditions are found in table \ref{table:tablenplanar}. Figure \ref{fig:nplanar} shows a vehicle coming towards the landing pad with an offset lateral position of 100m and with a velocity not pointed directly in-line with the target. All vehicle constraints are met. The vehicle uses maximum thrust almost the entire duration of the flight. The optimization provides a thrust-vectored solution which precisely arrests the attitude motion while meeting the translational requirements simultaneously. The simple MRP alignment constraint is met and shown in Figure \ref{fig:nplanarcontrols}.
 
 \begin{figure}[!htbp] 
   \centering
@@ -639,7 +633,7 @@ Now let us look at a non-planar problem where the initial condition of the vehic
 The vehicle following the non-planar path in figure \ref{fig:planar} reached its terminal state after $19.95$ seconds and with a final mass of $376.784$kg with a starting mass of $408.23$kg only using $10.6$\% of its fuel. Additionally, figure \ref{fig:nplanar_rv} shows that the terminal position and velocity constraints are met, and the vehicle reaches the landing pad with a safe terminal velocity.
 \begin{figure}[ht] 
   \centering
-  \includegraphics[width=.7\linewidth]{figs/nonplanar_rv.eps}
+  \includegraphics[width=.5\linewidth]{figs/nonplanar_rv.eps}
   \caption{Non-Planar Guidance Problem: Position and Velocity Histories}
   \label{fig:nplanar_rv}
 \end{figure}
@@ -693,6 +687,8 @@ The successive convexification routine is a very valuable tool in that it can qu
 \section*{Acknowledgments}
 The authors would like to thank Prof. Behçet Açikmeşe of the Autonomous Control Laboratory at the University of Washington.
 
+\begin{singlespace} 
 \bibliography{references}
+\end{singlespace}
 
 \end{document}

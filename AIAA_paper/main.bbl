@@ -1,4 +1,4 @@
-\begin{thebibliography}{11}
+\begin{thebibliography}{18}
 \newcommand{\enquote}[1]{``#1''}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -11,13 +11,65 @@
 Jones, H., \enquote{The Recent Large Reduction in Space Launch Cost,} 48th
   International Conference on Environmental Systems, 2018.
 
-\bibitem[{Boyd and Vandenberghe(2004)}]{boyd2004convex}
-Boyd, S., and Vandenberghe, L., \emph{Convex Optimization}, Cambridge
-  university press, 2004.
+\bibitem[{Klumpp(1974)}]{klumpp1974apollo}
+Klumpp, A.~R., \enquote{Apollo lunar descent guidance,} \emph{Automatica},
+  Vol.~10, No.~2, 1974, pp. 133--146.
+
+\bibitem[{D'Souza and D'Souza(1997)}]{d1997optimal}
+D'Souza, C., and D'Souza, C., \enquote{An optimal guidance law for planetary
+  landing,} \emph{Guidance, Navigation, and Control Conference}, 1997, p. 3709.
+
+\bibitem[{Blackmore et~al.(2010)Blackmore, Açikmeşe, and
+  Scharf}]{blackmore2010minimum}
+Blackmore, L., Açikmeşe, B., and Scharf, D.~P.,
+  \enquote{Minimum-landing-error powered-descent guidance for Mars landing
+  using convex optimization,} \emph{Journal of guidance, control, and
+  dynamics}, Vol.~33, No.~4, 2010, pp. 1161--1171.
+
+\bibitem[{A{\c{c}}{\i}kme{\c{s}}e and Blackmore(2011)}]{accikmecse2011lossless}
+A{\c{c}}{\i}kme{\c{s}}e, B., and Blackmore, L., \enquote{Lossless
+  convexification of a class of optimal control problems with non-convex
+  control constraints,} \emph{Automatica}, Vol.~47, No.~2, 2011, pp. 341--347.
+
+\bibitem[{Acikmese et~al.(2012)Acikmese, Casoliva, Carson, and
+  Blackmore}]{acikmese2012g}
+Acikmese, B., Casoliva, J., Carson, J., and Blackmore, L., \enquote{G-fold: A
+  real-time implementable fuel optimal large divert guidance algorithm for
+  planetary pinpoint landing,} \emph{Concepts and Approaches for Mars
+  Exploration}, Vol. 1679, 2012.
+
+\bibitem[{Acikmese et~al.(2013)Acikmese, Aung, Casoliva, Mohan, Johnson,
+  Scharf, Masten, Scotkin, Wolf, and Regehr}]{acikmese2013flight}
+Acikmese, B., Aung, M., Casoliva, J., Mohan, S., Johnson, A., Scharf, D.,
+  Masten, D., Scotkin, J., Wolf, A., and Regehr, M.~W., \enquote{Flight testing
+  of trajectories computed by G-FOLD: Fuel optimal large divert guidance
+  algorithm for planetary landing,} \emph{AAS/AIAA spaceflight mechanics
+  meeting}, 2013.
+
+\bibitem[{Scharf et~al.(2014)Scharf, Regehr, Vaughan, Benito, Ansari, Aung,
+  Johnson, Casoliva, Mohan, Dueri et~al.}]{scharf2014adapt}
+Scharf, D.~P., Regehr, M.~W., Vaughan, G.~M., Benito, J., Ansari, H., Aung, M.,
+  Johnson, A., Casoliva, J., Mohan, S., Dueri, D., et~al., \enquote{ADAPT
+  demonstrations of onboard large-divert guidance with a VTVL rocket,}
+  \emph{2014 IEEE Aerospace Conference}, IEEE, 2014, pp. 1--18.
+
+\bibitem[{Liu et~al.(2017)Liu, Lu, and Pan}]{LiuSurvey2017}
+Liu, X., Lu, P., and Pan, B., \enquote{Survey of Convex Optimization for
+  Aerospace Applications,} \emph{Astrodynamics}, Vol.~1, No.~1, 2017, pp.
+  1--23.
+
+\bibitem[{Wang and Grant(2017)}]{wang_paper}
+Wang, Z., and Grant, M.~J., \enquote{Constrained Trajectory Optimization for
+  Planetary Entry via Sequential Convex Programming,} \emph{AIAA Journal of
+  Guidance, Control and Dynamics}, 2017.
 
 \bibitem[{Nesterov and Nemirovskii(1994)}]{nesterov1994interior}
 Nesterov, Y., and Nemirovskii, A., \emph{Interior-point polynomial algorithms
   in convex programming}, Vol.~13, Siam, 1994.
+
+\bibitem[{Boyd and Vandenberghe(2004)}]{boyd2004convex}
+Boyd, S., and Vandenberghe, L., \emph{Convex Optimization}, Cambridge
+  university press, 2004.
 
 \bibitem[{Mao et~al.(2016)Mao, Szmuk, and
   A{\c{c}}{\i}kme{\c{s}}e}]{mao2016successive}
@@ -30,35 +82,26 @@ Mao, Y., Szmuk, M., and A{\c{c}}{\i}kme{\c{s}}e, B., \enquote{Successive
 Szmuk, M., \enquote{Successive Convexification \& High Performance Feedback
   Control for Agile Flight,} Ph.D. thesis, 2019.
 
-\bibitem[{Szmuk et~al.(2017)Szmuk, Eren, and Açikmeşe}]{szmuk2017successive}
-Szmuk, M., Eren, U., and Açikmeşe, B., \enquote{Successive convexification
-  for mars 6-dof powered descent landing guidance,} \emph{AIAA Guidance,
-  Navigation, and Control Conference}, 2017, p. 1500.
-
-\bibitem[{Andrle and Crassidis(2013)}]{andrle2013geometric}
-Andrle, M.~S., and Crassidis, J.~L., \enquote{Geometric integration of
-  quaternions,} \emph{Journal of Guidance, Control, and Dynamics}, Vol.~36,
-  No.~6, 2013, pp. 1762--1767.
-
-\bibitem[{Schaub and Junkins(2018)}]{sj}
-Schaub, H., and Junkins, J.~L., \emph{Analytical Mechanics of Space Systems},
-  4\textsuperscript{th} ed., American Institute of Aeronautics and
-  Astronautics, Inc, Reston, Virginia, 2018.
-
 \bibitem[{Szmuk and Açikmeşe(2018)}]{szmuk2018successive}
 Szmuk, M., and Açikmeşe, B., \enquote{Successive convexification for 6-DoF
   Mars rocket powered landing with free-final-time,} \emph{2018 AIAA Guidance,
   Navigation, and Control Conference}, 2018, p. 0617.
 
-\bibitem[{A{\c{c}}{\i}kme{\c{s}}e and Blackmore(2011)}]{accikmecse2011lossless}
-A{\c{c}}{\i}kme{\c{s}}e, B., and Blackmore, L., \enquote{Lossless
-  convexification of a class of optimal control problems with non-convex
-  control constraints,} \emph{Automatica}, Vol.~47, No.~2, 2011, pp. 341--347.
+\bibitem[{Dueri et~al.(2014)Dueri, Zhang, and
+  A{\c{c}}ikmese}]{dueri2014automated}
+Dueri, D., Zhang, J., and A{\c{c}}ikmese, B., \enquote{Automated custom code
+  generation for embedded, real-time second order cone programming,} \emph{IFAC
+  Proceedings Volumes}, Vol.~47, No.~3, 2014, pp. 1605--1612.
 
 \bibitem[{Malyuta et~al.(2019)Malyuta, Reynolds~P., Szmuk, Mesbahi, and
   Açikmeşe}]{malyuta2019discrete}
 Malyuta, D., Reynolds~P., T., Szmuk, M., Mesbahi, M., and Açikmeşe, B.,
   \enquote{Discretization Performance and Accuracy Analysis for the Powered
   Descent Guidance Problem,} 2019.
+
+\bibitem[{Domahidi et~al.(2013)Domahidi, Chu, and Boyd}]{domahidi2013ecos}
+Domahidi, A., Chu, E., and Boyd, S., \enquote{ECOS: An SOCP solver for embedded
+  systems,} \emph{2013 European Control Conference (ECC)}, IEEE, 2013, pp.
+  3071--3076.
 
 \end{thebibliography}

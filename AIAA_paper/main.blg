@@ -1,0 +1,15 @@
+This is BibTeX, Version 0.99dThe top-level auxiliary file: main.aux
+The style file: new-aiaa.bst
+Database file #1: references.bib
+I was expecting a `,' or a `}'---line 283 of file references.bib
+ : 
+ : @article{dueri2014automated,
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+Warning--empty booktitle in jones2018recent
+Warning--empty pages in jones2018recent
+Warning--empty pages in acikmese2012g
+Warning--empty pages in acikmese2013flight
+Warning--missing school in szmuk2019successive
+Warning--empty journal in malyuta2019discrete
+(There was 1 error message)
