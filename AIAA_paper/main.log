@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6630 64-bit) (preloaded format=pdflatex 2018.5.3)  30 NOV 2020 18:34
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6630 64-bit) (preloaded format=pdflatex 2018.5.3)  30 NOV 2020 21:59
 entering extended mode
 **./main.tex
 (main.tex
@@ -2415,33 +2415,35 @@ LaTeX Font Info:    Font shape `T1/ntxtlf/bx/n' in size <10> not available
 LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
 (Font)              scaled to size 10.0pt on input line 39.
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 12.0pt on input line 68.
+(Font)              scaled to size 12.0pt on input line 49.
 LaTeX Font Info:    Font shape `T1/ntxtlf/bx/n' in size <12> not available
-(Font)              Font shape `T1/ntxtlf/b/n' tried instead on input line 68.
+(Font)              Font shape `T1/ntxtlf/b/n' tried instead on input line 49.
 LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
-(Font)              scaled to size 12.0pt on input line 68.
+(Font)              scaled to size 12.0pt on input line 49.
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/sc' will be
-(Font)              scaled to size 10.0pt on input line 69.
+(Font)              scaled to size 10.0pt on input line 50.
 Package microtype Info: Character `029' is missing
 (microtype)             in font `T1/ntxtlf/m/sc/10'.
 (microtype)             Ignoring protrusion settings for this character.
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 16.525pt on input line 69.
+(Font)              scaled to size 16.525pt on input line 50.
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 24.44884pt on input line 69.
+(Font)              scaled to size 24.44884pt on input line 50.
  [1
 
 {C:/Users/Padraig Lysandrou/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
-LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 5.5pt on input line 84.
 Missing character: There is no Û in font ntx-Bold-tlf-ot1!
- [2
-
-] [3] [4]
+ [2] [3] [4]
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 5.5pt on input line 195.
+Package mdframed Info: Box was splittet wrong
+ starting loop to iterate the splitting point
+(mdframed)              on input line 244.
+ [5] [6] [7] [8] [9]
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 203.
- [5] [6] [7] [8] [9] [10] [11] [12]
-Package mdframed Info: Not enough space on this page on input line 644.
+put line 465.
+ [10] [11]
+Package mdframed Info: Not enough space on this page on input line 541.
 Package epstopdf Info: Source file: <figs/planar_traj.eps>
 (epstopdf)                    date: 2019-11-28 09:12:46
 (epstopdf)                    size: 93324 bytes
@@ -2450,13 +2452,13 @@ Package epstopdf Info: Source file: <figs/planar_traj.eps>
 (epstopdf)                    size: 32350 bytes
 (epstopdf)             Command: <epstopdf --outfile=figs/planar_traj-eps-conver
 ted-to.pdf figs/planar_traj.eps>
-(epstopdf)             \includegraphics on input line 696.
+(epstopdf)             \includegraphics on input line 593.
 Package epstopdf Info: Output file is already uptodate.
-<figs/planar_traj-eps-converted-to.pdf, id=269, 462.72874pt x 239.89626pt>
+<figs/planar_traj-eps-converted-to.pdf, id=242, 462.72874pt x 239.89626pt>
 File: figs/planar_traj-eps-converted-to.pdf Graphic file (type pdf)
 <use figs/planar_traj-eps-converted-to.pdf>
 Package pdftex.def Info: figs/planar_traj-eps-converted-to.pdf  used on input l
-ine 696.
+ine 593.
 (pdftex.def)             Requested size: 469.75502pt x 243.54153pt.
 Package epstopdf Info: Source file: <figs/planar_controls.eps>
 (epstopdf)                    date: 2019-11-28 09:09:42
@@ -2467,13 +2469,13 @@ Package epstopdf Info: Source file: <figs/planar_controls.eps>
 (epstopdf)                    size: 19061 bytes
 (epstopdf)             Command: <epstopdf --outfile=figs/planar_controls-eps-co
 nverted-to.pdf figs/planar_controls.eps>
-(epstopdf)             \includegraphics on input line 704.
+(epstopdf)             \includegraphics on input line 601.
 Package epstopdf Info: Output file is already uptodate.
-<figs/planar_controls-eps-converted-to.pdf, id=270, 486.81876pt x 317.185pt>
+<figs/planar_controls-eps-converted-to.pdf, id=243, 486.81876pt x 317.185pt>
 File: figs/planar_controls-eps-converted-to.pdf Graphic file (type pdf)
 <use figs/planar_controls-eps-converted-to.pdf>
 Package pdftex.def Info: figs/planar_controls-eps-converted-to.pdf  used on inp
-ut line 704.
+ut line 601.
 (pdftex.def)             Requested size: 469.75502pt x 306.06706pt.
 Package epstopdf Info: Source file: <figs/planar_alignment.eps>
 (epstopdf)                    date: 2019-11-28 09:02:04
@@ -2484,17 +2486,17 @@ Package epstopdf Info: Source file: <figs/planar_alignment.eps>
 (epstopdf)                    size: 12458 bytes
 (epstopdf)             Command: <epstopdf --outfile=figs/planar_alignment-eps-c
 onverted-to.pdf figs/planar_alignment.eps>
-(epstopdf)             \includegraphics on input line 711.
+(epstopdf)             \includegraphics on input line 608.
 Package epstopdf Info: Output file is already uptodate.
-<figs/planar_alignment-eps-converted-to.pdf, id=271, 467.7475pt x 137.51375pt>
+<figs/planar_alignment-eps-converted-to.pdf, id=244, 467.7475pt x 137.51375pt>
 File: figs/planar_alignment-eps-converted-to.pdf Graphic file (type pdf)
 <use figs/planar_alignment-eps-converted-to.pdf>
 Package pdftex.def Info: figs/planar_alignment-eps-converted-to.pdf  used on in
-put line 711.
+put line 608.
 (pdftex.def)             Requested size: 469.75502pt x 138.11142pt.
- [13
+ [12
 
-] [14 <./figs/planar_traj-eps-converted-to.pdf> <./figs/planar_controls-eps-con
+] [13 <./figs/planar_traj-eps-converted-to.pdf> <./figs/planar_controls-eps-con
 verted-to.pdf>]
 Package epstopdf Info: Source file: <figs/nonplanar_controls.eps>
 (epstopdf)                    date: 2019-11-28 09:22:59
@@ -2505,17 +2507,18 @@ df>
 (epstopdf)                    size: 23863 bytes
 (epstopdf)             Command: <epstopdf --outfile=figs/nonplanar_controls-eps
 -converted-to.pdf figs/nonplanar_controls.eps>
-(epstopdf)             \includegraphics on input line 729.
+(epstopdf)             \includegraphics on input line 626.
 Package epstopdf Info: Output file is already uptodate.
-<figs/nonplanar_controls-eps-converted-to.pdf, id=314, 486.81876pt x 371.3875pt
+<figs/nonplanar_controls-eps-converted-to.pdf, id=287, 486.81876pt x 371.3875pt
 >
 File: figs/nonplanar_controls-eps-converted-to.pdf Graphic file (type pdf)
 <use figs/nonplanar_controls-eps-converted-to.pdf>
 Package pdftex.def Info: figs/nonplanar_controls-eps-converted-to.pdf  used on 
-input line 729.
+input line 626.
 (pdftex.def)             Requested size: 305.33789pt x 232.93831pt.
- [15 <./figs/planar_alignment-eps-converted-to.pdf>] [16 <./figs/nonplanar_cont
-rols-eps-converted-to.pdf>]
+
+[14 <./figs/planar_alignment-eps-converted-to.pdf>] [15 <./figs/nonplanar_contr
+ols-eps-converted-to.pdf>]
 Package epstopdf Info: Source file: <figs/nonplanar_3dtraj.eps>
 (epstopdf)                    date: 2019-11-26 18:25:22
 (epstopdf)                    size: 62285 bytes
@@ -2525,13 +2528,13 @@ Package epstopdf Info: Source file: <figs/nonplanar_3dtraj.eps>
 (epstopdf)                    size: 14342 bytes
 (epstopdf)             Command: <epstopdf --outfile=figs/nonplanar_3dtraj-eps-c
 onverted-to.pdf figs/nonplanar_3dtraj.eps>
-(epstopdf)             \includegraphics on input line 737.
+(epstopdf)             \includegraphics on input line 634.
 Package epstopdf Info: Output file is already uptodate.
-<figs/nonplanar_3dtraj-eps-converted-to.pdf, id=348, 458.71375pt x 437.635pt>
+<figs/nonplanar_3dtraj-eps-converted-to.pdf, id=321, 458.71375pt x 437.635pt>
 File: figs/nonplanar_3dtraj-eps-converted-to.pdf Graphic file (type pdf)
 <use figs/nonplanar_3dtraj-eps-converted-to.pdf>
 Package pdftex.def Info: figs/nonplanar_3dtraj-eps-converted-to.pdf  used on in
-put line 737.
+put line 634.
 (pdftex.def)             Requested size: 469.75502pt x 448.19147pt.
 Package epstopdf Info: Source file: <figs/nonplanar_rv.eps>
 (epstopdf)                    date: 2019-11-28 09:49:59
@@ -2541,18 +2544,18 @@ Package epstopdf Info: Source file: <figs/nonplanar_rv.eps>
 (epstopdf)                    size: 15079 bytes
 (epstopdf)             Command: <epstopdf --outfile=figs/nonplanar_rv-eps-conve
 rted-to.pdf figs/nonplanar_rv.eps>
-(epstopdf)             \includegraphics on input line 745.
+(epstopdf)             \includegraphics on input line 642.
 Package epstopdf Info: Output file is already uptodate.
-<figs/nonplanar_rv-eps-converted-to.pdf, id=351, 261.97874pt x 269.005pt>
+<figs/nonplanar_rv-eps-converted-to.pdf, id=324, 261.97874pt x 269.005pt>
 File: figs/nonplanar_rv-eps-converted-to.pdf Graphic file (type pdf)
 <use figs/nonplanar_rv-eps-converted-to.pdf>
 Package pdftex.def Info: figs/nonplanar_rv-eps-converted-to.pdf  used on input 
-line 745.
+line 642.
 (pdftex.def)             Requested size: 328.82707pt x 337.6551pt.
- [17
+ [16
 
- <./figs/nonplanar_3dtraj-eps-converted-to.pdf>] [18 <./figs/nonplanar_rv-eps-c
-onverted-to.pdf>] (main.bbl
+ <./figs/nonplanar_3dtraj-eps-converted-to.pdf>]
+[17 <./figs/nonplanar_rv-eps-converted-to.pdf>] (main.bbl
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
 (Font)              scaled to size 9.0pt on input line 1.
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/it' will be
@@ -2566,28 +2569,28 @@ LaTeX Font Info:    Font shape `T1/ntxtt/m/n' will be
 LaTeX Font Info:    Font shape `OT1/ntxtlf/b/n' will be
 (Font)              scaled to size 9.0pt on input line 45.
 )
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 801.
- [19
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 698.
+ [18
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 801.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 698.
  (main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 801.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 801.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 698.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 698.
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 0453BE9C056B1FCA1DFF09C589854E58;1354.
+(rerunfilecheck)             Checksum: 06582C48A75C050AE4E78584DEA511F2;1155.
  ) 
 Here is how much of TeX's memory you used:
- 28924 strings out of 493305
- 535294 string characters out of 3124581
- 639660 words of memory out of 3000000
- 31695 multiletter control sequences out of 15000+200000
+ 28907 strings out of 493305
+ 535092 string characters out of 3124581
+ 651555 words of memory out of 3000000
+ 31688 multiletter control sequences out of 15000+200000
  668228 words of font info for 293 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 60i,21n,94p,10369b,773s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 60i,21n,94p,10369b,884s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Users/Padraig Lysandrou/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips
-/newtx/ntx-ot1-tlf.enc}{C:/Users/Padraig Lysandrou/AppData/Local/Programs/MiKTe
-X 2.9/fonts/enc/dvips/base/8r.enc}{C:/Users/Padraig Lysandrou/AppData/Local/Pro
+/base/8r.enc}{C:/Users/Padraig Lysandrou/AppData/Local/Programs/MiKTeX 2.9/font
+s/enc/dvips/newtx/ntx-ot1-tlf.enc}{C:/Users/Padraig Lysandrou/AppData/Local/Pro
 grams/MiKTeX 2.9/fonts/enc/dvips/newtx/ntx-ec-tlf-sc.enc}{C:/Users/Padraig Lysa
 ndrou/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/newtx/ntx-ec-tlf.enc}{C
 :/Users/Padraig Lysandrou/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/tex
@@ -2618,9 +2621,9 @@ Users/Padraig Lysandrou/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/tx
 fonts/txsyb.pfb><C:/Users/Padraig Lysandrou/AppData/Local/Programs/MiKTeX 2.9/f
 onts/type1/public/newtx/txsys.pfb><C:/Users/Padraig Lysandrou/AppData/Local/Pro
 grams/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (19 pages, 411034 bytes).
+Output written on main.pdf (18 pages, 398900 bytes).
 PDF statistics:
- 492 PDF objects out of 1000 (max. 8388607)
- 136 named destinations out of 1000 (max. 500000)
- 41663 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 465 PDF objects out of 1000 (max. 8388607)
+ 126 named destinations out of 1000 (max. 500000)
+ 41639 words of extra memory for PDF output out of 42996 (max. 10000000)
 
