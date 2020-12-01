@@ -1,0 +1,64 @@
+\begin{thebibliography}{11}
+\newcommand{\enquote}[1]{``#1''}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{\discretionary{}{}{}https://doi.org/#1}\else
+  \providecommand{\doi}[1]{\discretionary{}{}{}\urlstyle{rm}\url{https://doi.org/#1}}\fi
+
+\bibitem[{Jones(2018)}]{jones2018recent}
+Jones, H., \enquote{The Recent Large Reduction in Space Launch Cost,} 48th
+  International Conference on Environmental Systems, 2018.
+
+\bibitem[{Boyd and Vandenberghe(2004)}]{boyd2004convex}
+Boyd, S., and Vandenberghe, L., \emph{Convex optimization}, Cambridge
+  university press, 2004.
+
+\bibitem[{Nesterov and Nemirovskii(1994)}]{nesterov1994interior}
+Nesterov, Y., and Nemirovskii, A., \emph{Interior-point polynomial algorithms
+  in convex programming}, Vol.~13, Siam, 1994.
+
+\bibitem[{Mao et~al.(2016)Mao, Szmuk, and
+  A{\c{c}}{\i}kme{\c{s}}e}]{mao2016successive}
+Mao, Y., Szmuk, M., and A{\c{c}}{\i}kme{\c{s}}e, B., \enquote{Successive
+  convexification of non-convex optimal control problems and its convergence
+  properties,} \emph{2016 IEEE 55th Conference on Decision and Control (CDC)},
+  IEEE, 2016, pp. 3636--3641.
+
+\bibitem[{Szmuk(2019)}]{szmuk2019successive}
+Szmuk, M., \enquote{Successive Convexification \& High Performance Feedback
+  Control for Agile Flight,} Ph.D. thesis, 2019.
+
+\bibitem[{Szmuk et~al.(2017)Szmuk, Eren, and Açikmeşe}]{szmuk2017successive}
+Szmuk, M., Eren, U., and Açikmeşe, B., \enquote{Successive convexification
+  for mars 6-dof powered descent landing guidance,} \emph{AIAA Guidance,
+  Navigation, and Control Conference}, 2017, p. 1500.
+
+\bibitem[{Andrle and Crassidis(2013)}]{andrle2013geometric}
+Andrle, M.~S., and Crassidis, J.~L., \enquote{Geometric integration of
+  quaternions,} \emph{Journal of Guidance, Control, and Dynamics}, Vol.~36,
+  No.~6, 2013, pp. 1762--1767.
+
+\bibitem[{Schaub and Junkins(2018)}]{sj}
+Schaub, H., and Junkins, J.~L., \emph{Analytical Mechanics of Space Systems},
+  4\textsuperscript{th} ed., American Institute of Aeronautics and
+  Astronautics, Inc, Reston, Virginia, 2018.
+
+\bibitem[{Szmuk and Açikmeşe(2018)}]{szmuk2018successive}
+Szmuk, M., and Açikmeşe, B., \enquote{Successive convexification for 6-DoF
+  Mars rocket powered landing with free-final-time,} \emph{2018 AIAA Guidance,
+  Navigation, and Control Conference}, 2018, p. 0617.
+
+\bibitem[{A{\c{c}}{\i}kme{\c{s}}e and Blackmore(2011)}]{accikmecse2011lossless}
+A{\c{c}}{\i}kme{\c{s}}e, B., and Blackmore, L., \enquote{Lossless
+  convexification of a class of optimal control problems with non-convex
+  control constraints,} \emph{Automatica}, Vol.~47, No.~2, 2011, pp. 341--347.
+
+\bibitem[{Malyuta et~al.(2019)Malyuta, Reynolds~P., Szmuk, Mesbahi, and
+  Açikmeşe}]{malyuta2019discrete}
+Malyuta, D., Reynolds~P., T., Szmuk, M., Mesbahi, M., and Açikmeşe, B.,
+  \enquote{Discretization Performance and Accuracy Analysis for the Powered
+  Descent Guidance Problem,} 2019.
+
+\end{thebibliography}
