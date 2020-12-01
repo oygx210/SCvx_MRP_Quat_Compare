@@ -1,4 +1,4 @@
-\begin{thebibliography}{18}
+\begin{thebibliography}{22}
 \newcommand{\enquote}[1]{``#1''}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -7,16 +7,21 @@
   \providecommand{\doi}[1]{\discretionary{}{}{}https://doi.org/#1}\else
   \providecommand{\doi}[1]{\discretionary{}{}{}\urlstyle{rm}\url{https://doi.org/#1}}\fi
 
+\bibitem[{Blackmore(2016)}]{blackmore2016bridge}
+Blackmore, L., \enquote{Autonomous Precision Landing of Space Rockets,}
+  \emph{Winter Bridge on Frontiers of Engineering}, Vol.~4, No.~46, 2016, pp.
+  15--29.
+
 \bibitem[{Jones(2018)}]{jones2018recent}
 Jones, H., \enquote{The Recent Large Reduction in Space Launch Cost,} 48th
   International Conference on Environmental Systems, 2018.
 
 \bibitem[{Klumpp(1974)}]{klumpp1974apollo}
-Klumpp, A.~R., \enquote{Apollo lunar descent guidance,} \emph{Automatica},
+Klumpp, A.~R., \enquote{Apollo Lunar Descent Guidance,} \emph{Automatica},
   Vol.~10, No.~2, 1974, pp. 133--146.
 
 \bibitem[{D'Souza and D'Souza(1997)}]{d1997optimal}
-D'Souza, C., and D'Souza, C., \enquote{An optimal guidance law for planetary
+D'Souza, C., \enquote{An optimal guidance law for planetary
   landing,} \emph{Guidance, Navigation, and Control Conference}, 1997, p. 3709.
 
 \bibitem[{Blackmore et~al.(2010)Blackmore, Açikmeşe, and
@@ -63,6 +68,12 @@ Wang, Z., and Grant, M.~J., \enquote{Constrained Trajectory Optimization for
   Planetary Entry via Sequential Convex Programming,} \emph{AIAA Journal of
   Guidance, Control and Dynamics}, 2017.
 
+\bibitem[{Dueri et~al.(2014)Dueri, Zhang, and
+  A{\c{c}}ikmese}]{dueri2014automated}
+Dueri, D., Zhang, J., and A{\c{c}}ikmese, B., \enquote{Automated custom code
+  generation for embedded, real-time second order cone programming,} \emph{IFAC
+  Proceedings Volumes}, Vol.~47, No.~3, 2014, pp. 1605--1612.
+
 \bibitem[{Nesterov and Nemirovskii(1994)}]{nesterov1994interior}
 Nesterov, Y., and Nemirovskii, A., \emph{Interior-point polynomial algorithms
   in convex programming}, Vol.~13, Siam, 1994.
@@ -71,27 +82,39 @@ Nesterov, Y., and Nemirovskii, A., \emph{Interior-point polynomial algorithms
 Boyd, S., and Vandenberghe, L., \emph{Convex Optimization}, Cambridge
   university press, 2004.
 
-\bibitem[{Mao et~al.(2016)Mao, Szmuk, and
+\bibitem[{Mao et~al.(2016{\natexlab{a}})Mao, Szmuk, and
   A{\c{c}}{\i}kme{\c{s}}e}]{mao2016successive}
 Mao, Y., Szmuk, M., and A{\c{c}}{\i}kme{\c{s}}e, B., \enquote{Successive
   convexification of non-convex optimal control problems and its convergence
   properties,} \emph{2016 IEEE 55th Conference on Decision and Control (CDC)},
-  IEEE, 2016, pp. 3636--3641.
-
-\bibitem[{Szmuk(2019)}]{szmuk2019successive}
-Szmuk, M., \enquote{Successive Convexification \& High Performance Feedback
-  Control for Agile Flight,} Ph.D. thesis, 2019.
+  IEEE, 2016{\natexlab{a}}, pp. 3636--3641.
 
 \bibitem[{Szmuk and Açikmeşe(2018)}]{szmuk2018successive}
 Szmuk, M., and Açikmeşe, B., \enquote{Successive convexification for 6-DoF
   Mars rocket powered landing with free-final-time,} \emph{2018 AIAA Guidance,
   Navigation, and Control Conference}, 2018, p. 0617.
 
-\bibitem[{Dueri et~al.(2014)Dueri, Zhang, and
-  A{\c{c}}ikmese}]{dueri2014automated}
-Dueri, D., Zhang, J., and A{\c{c}}ikmese, B., \enquote{Automated custom code
-  generation for embedded, real-time second order cone programming,} \emph{IFAC
-  Proceedings Volumes}, Vol.~47, No.~3, 2014, pp. 1605--1612.
+\bibitem[{Szmuk(2019)}]{szmuk2019successive}
+Szmuk, M., \enquote{Successive Convexification \& High Performance Feedback
+  Control for Agile Flight,} Ph.D. thesis, 2019.
+
+\bibitem[{Mao et~al.(2016{\natexlab{b}})Mao, Szmuk, and {A\c c\i kme\c
+  se}}]{mao2016cdc}
+Mao, Y., Szmuk, M., and {A\c c\i kme\c se}, B., \enquote{Successive
+  Convexification of Non-Convex Optimal Control Problems and its Convergence
+  Properties,} \emph{2016 IEEE 55th Conference on Decision and Control (CDC)},
+  2016{\natexlab{b}}, pp. 3636--3641.
+
+\bibitem[{Mao et~al.(2018)Mao, Szmuk, and {A\c c\i kme\c se}}]{mao2017aut}
+Mao, Y., Szmuk, M., and {A\c c\i kme\c se}, B.~A., \enquote{Successive
+  Convexification: A Superlinearly Convergent Algorithm for Non-convex Optimal
+  Control Problems,} \emph{ArXiv e-prints}, 2018.
+\newblock ArXiv:1804.06539.
+
+\bibitem[{soc()}]{socp_book}
+\enquote{Second-Order Cone Programming, author={Alizadeh, F. and Goldfarb, D},
+  booktitle={Mathematical Programming, SN B}, pages={95:3-51}, year={2003},}
+
 
 \bibitem[{Malyuta et~al.(2019)Malyuta, Reynolds~P., Szmuk, Mesbahi, and
   Açikmeşe}]{malyuta2019discrete}

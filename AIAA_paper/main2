@@ -37,12 +37,12 @@
 \maketitle
 
 \begin{abstract}
-	This paper presents the formulation and demonstration of a 6 degree-of-freedom (DoF) free-final-time guidance algorithm which solves the canonical powered descent guidance (PDG) problem. This formulation can be quickly solved as a series of second order cone program (SOCP) sub-problems making it tractable for online implementation on real-time systems using Interior Point Method (IPM) solvers. Modified Rodrigues Parameters (MRPs) are employed in this paper, which are a minimal attitude formalism derived from quaternions. This reduces the number of optimization variables and constraints that other formalisms may require. The routine can be initialized with a dynamically inconsistent trajectory as the solution is driven to meet the nonlinear dynamics more closely with each iteration. This formulation also includes typical vehicular control, environmental, and mission geometry constraints such as thrust vector gimbal angle constraints, glide-slope constraints, and attitude constraints.
+	This paper presents the formulation and demonstration of a 6 degree-of-freedom (DoF) free-final-time guidance algorithm which solves the canonical powered descent guidance (PDG) problem. This formulation can be quickly solved as a series of second order cone program (SOCP) sub-problems making it tractable for online implementation on real-time systems using Interior Point Method (IPM) solvers. Modified Rodrigues Parameters (MRPs) are employed in this paper, which are a minimal attitude formalism derived from quaternions. This reduces the number of optimization variables and constraints that other formalisms may require. The routine can be initialized with a dynamically inconsistent trajectory as the solution is driven to meet the nonlinear dynamics with each iteration. This formulation also includes typical vehicular control, environmental, and mission geometry constraints such as thrust vector gimbal angle constraints, glide-slope constraints, and attitude constraints.
 
 \end{abstract}
 
 \section{Introduction}
-\lettrine{T}{he} pin-point landing problem has been of significant interest for a variety of applications, such as safely landing scientific payloads and humans on other planets, returning them back to Earth, and in the reuse of launch vehicles \cite{blackmore2016bridge}. The recent reuse capability of large rocket stages has already proven to be a fundamentally disruptive approach to the launch industry and has reduced the cost of getting to space \cite{jones2018recent}. Beyond this, landing safely near a base, refueling station, or scientific site will be a necessary technology for the continued exploration of our solar system. It is apparent that robust and reliable powered descent guidance routines will valuable for the future of our space transport infrastructure.
+\lettrine{T}{he} pin-point landing problem has been of significant interest for a variety of applications, such as safely landing scientific payloads and humans on other planets, returning them back to Earth, and in the reuse of launch vehicles. The recent reuse capability of large rocket stages has already proven to be a fundamentally disruptive approach to the launch industry and has reduced the cost of getting to space \cite{jones2018recent}. Beyond this, landing safely near a base, refueling station, or scientific site will be a necessary technology for the continued exploration of our solar system. It is apparent that robust and reliable powered descent guidance routines will valuable for the future of our space transport infrastructure.
 
 % Optimal control and guidance strategies are generally split into two categories: indirect and direct methods. Although the optimality of the indirect method can be guaranteed, solving the resulted two-point boundary value problem is a difficult task, and good initial guesses of the adjoint variables can be difficult to find or compute. The direct method does not require explicit derivation of first-order necessary conditions; instead, the original optimal control problem is approximated with a parameter optimization problem and solved using nonlinear programming (NLP) algorithms, such as sequential quadratic programming (SQP) algorithms. Although large-scale problems can be handled due to the development of NLP algorithms, the solution process is still time-consuming for complicated problems and dependent upon good initial guesses.
 
@@ -52,7 +52,7 @@ More recently, Lossless Convexification was developed to produce a perfect conve
 
 In this paper, the convex optimization framework is exploited because it is amenable to real-time, on-board implementation and has guaranteed convergence properties with deterministic criteria. These problems can be solved quickly and reliably, especially with custom solvers \cite{dueri2014automated}. Before applying the convex programming algorithm to solve powered descent guidance presented herein, the non-convex control constraints must be convexified such that the problem can be posed as a finite-dimensional second-order cone program (SOCP). SOCPs have low complexity and can be solved in polynomial time \cite{nesterov1994interior} \cite{boyd2004convex}.
 
-A method called successive convexification or SCvx, championed by \cite{mao2016successive}, is employed and this paper is largely based on the work of Szmuk et al \cite{szmuk2018successive}. In this method, the algorithm is initialized with a reference trajectory, then linearized and discretized as an SOCP problem. The problem is then structured as an iterative solution process where the current problem is linearized about the previous trajectory, input history, and final time. This is done in such a way that the solution satisfies the original nonlinear dynamics, non-convex constraints, and other state and control constraints. On each iteration, the dynamic relaxation weights are tightened to adhere closer to the true dynamics.
+A method called successive convexification or SCvx, championed by \cite{mao2016successive}, is employed and this paper is largely based on the work of Szmuk et al \cite{szmuk2018successive}. In this method, the algorithm is initialized with a reference trajectory, then linearized and discretized as an SOCP problem. The problem is then structured as an iterative solution process where the current problem is linearized about the previous trajectory. This is done in such a way that the solution satisfies the original nonlinear dynamics, non-convex constraints, and other state and control constraints. On each iteration, the dynamic relaxation weights are tightened to adhere closer to the true dynamics.
 
 The goal of the presented algorithm is to generate optimal translational and attitude trajectory profiles that are dynamically feasible. This means that the modeled vehicle should abide by all state boundary conditions, actuator constraints, and the proposed dynamics. This problem will first be defined as a continuous-time non-convex dynamical problem and then converted to a disciplined convex program. The dynamic, control, initial, and terminal constraints that must be met throughout the problem will also be discussed and derived. In order to maximize the divert capability of the vehicle, an objective of minimizing the final time of the solution is proposed. Although not proven here, this can be considered a proxy to the minimum-fuel consumption problem, as the non-convex constraint of minimum-thrust and single-ignition requires that the engine be on for the duration of the landing phase. In this scenario, the fuel-consumption cost is strictly increasing monotonic, and the sooner the terminal conditions can be met, the fewer the total cost. A similar free-ignition-time modification can be made to further decrease this cost and  optimize the ignition time \cite{szmuk2019successive}. 
 
@@ -61,7 +61,7 @@ The successive convexification framework (SCvx) is able to quickly solve optimal
 
 Alternate methods like sequential convex programming (SCP) offer a way to solve problems with more general nonlinear dynamics and non-convex constraints. While SCP performs well empirically, no general convergence results have been reported. SCvx differs from other SCP approaches in many ways, including proofs for (weak and strong) global convergence and superlinear convergence rate \cite{mao2016successive}. For general real-time autonomy tasks where safety and determinism are prioritized, it is often preferred to find a locally optimal solution quickly rather than a globally optimal solution slowly. Generally speaking, nonlinear programming (NLP) tends to be the method of choice for determining such locally optimal solutions via SCP. However, NLP convergence behaviour is dependent upon the initial guess provided to the solver and no guaranteed bounds on computational effort required for convergence are given. These facts are at odds with requirements for real-time embedded applications. 
 
-In contrast, SOCPs possess guarantees on the theoretical upper bound of convergence time when a feasible solution exists. That is, a solution within a specified uncertainty is guaranteed to be found within a set number of iterations as a function of the problem dimensions \cite{mao2016cdc,mao2017aut}. In practice, the amount of iterations required for convergence is typically much less than the theoretical upper bound, and is almost independent of problem dimensions \cite{socp_book}. When no feasible solution exists, the IPMs employed to solve SOCPs can also be designed to report a certificate of infeasibility. This makes SCvx an enticing choice over more historically conventional NLP methods (such as SCP) for real-time optimal path planning applications.
+In contast, SOCPs possess guarantees on the theoretical upper bound of convergence time when a feasible solution exists. That is, a solution within a specified uncertainty is guaranteed to be found within a set number of iterations as a function of the problem dimensions \cite{mao2016cdc,mao2017aut}. In practice, the amount of iterations required for convergence is typically much less than the theoretical upper bound, and is almost independent of problem dimensions \cite{socp_book}. When no feasible solution exists, the IPMs employed to solve SOCPs can also be designed to report a certificate of infeasibility. This makes SCvx an enticing choice over more historically conventional SCP methods (such as NLP) for real-time optimal path planning applications.
 
 
 \subsection{Definitions and Notation}
@@ -324,7 +324,13 @@ this leads us to the linear, convexified constraint $F_{min} \leq \Xi(\tau)\math
 
 
 \section{Discretization Scheme}
-The final step to fitting the dynamics, state, and control constraints to an optimization form is to cast the problem as a finite dimensional discretization. This finite dimensional problem is chosen to occur over $K\in\mathbb{Z}$ evenly separated points with respect to the normalized trajectory time $\tau$. The index set is defined as $\mathcal{K}\in\mathbb{Z}^{K}$ and $\mathcal{K}_-\in\mathbb{Z}^{K-1}$ for the state and input histories. The trajectory time is normalized on the interval $\tau \in [0,1 ]$; therefore, the discrete time step at point $k$ is defined as such:
+The final step to fitting the dynamics, state, and control constraints to an optimization form is to cast the problem as a finite dimensional discretization. This finite dimensional problem is chosen to occur over $K\in\mathbb{Z}$ evenly separated points with respect to the normalized trajectory time $\tau$. The index set is defined as $\mathcal{K}\in\mathbb{Z}^{K}$ and $\mathcal{K}_-\in\mathbb{Z}^{K-1}$ for the state and input histories as the following:
+\begin{align*}
+	\mathcal{K} &\triangleq \{0,1,\cdots, K-1\} \\
+	\mathcal{K}_- &\triangleq \{0,1,\cdots, K-2 \}
+\end{align*}
+%
+Given that the trajectory time is normalized on the interval $\tau \in [0,1 ]$, the discrete time step at point $k$ is defined as such:
 %
 \begin{align}
 & \tau_k \triangleq \frac{k}{K-1}, \quad \forall k \in \mathcal{K}
@@ -429,16 +435,24 @@ Dynamic relaxation variable can now be added to discount artificial infeasibilit
 \end{align}
 The right super script $^i$ indicates the iterate of the algorithm, where the subscript $_k$ means the ordered parameter entrance in our array shaped by $\mathcal{K}$.
 
-We shall now augment the cost function with the addition of the virtual control variable $\bm{\nu}$. The cost function is augmented again with $w_v \norm{\bm{\nu}^i}_1$ so that the magnitude of the entire history of $\bm{\nu}$ is penalized. As the iteration continues, this value is minimized, making the solution more dynamically feasible and true to the linear system. Additionally, the magnitude of this norm is indicative of a final solution in the successive iteration process.
+As $\bm{\nu}$ will be in the augmented cost function, the following virtual control history vector $\in \mathbb{R}^{K-1}$ will be referred to:
+\begin{align}
+\bm{\nu}^i = 
+	\begin{bmatrix}
+	{\bm{\nu}_0^i}^T & \cdots & {\bm{\nu}^i_{K-2}}^T 
+	\end{bmatrix}^T
+\end{align}
+
+The cost function is augmented again with $w_v \norm{\bm{\nu}^i}_1$ so that the magnitude of the entire history of $\bm{\nu}$ is penalized. As the iteration continues, this value is minimized, making the solution more dynamically feasible and true to the linear system. Additionally, the magnitude of this norm is indicative of a final solution in the successive iteration process.
 
 \clearpage
 \section{Convex Sub-Problem}
-Now that the proposed problem has been linearized and convexified, the components can be assembled as the full free-final-time problem as shown in Problem 2 where the following objective function is used:
+Now that the proposed problem has been linearized and convexified, the components can be assembled as the full free-final-time problem as shown in problem \ref{problem2} where the following objective function is used:
 \begin{align}
 	\min_{\eta^i, \mathbf{u}_k^i} \quad w_\eta \eta^i + w_\Delta^i || \bm{\bar{\Delta}}^i ||_2 + w_{\Delta_\eta} || \Delta_\eta^i ||_1 + w_v || \bar{\bm{\nu}}^i ||_1
 \end{align}
 
-The goal is for the successive convexification Algorithm \ref{Successive} to continue iterating until $\Delta_{tol}$ and $\nu_{tol}$ are met. These are compared to by the magnitude of each vector and are checked at the end of each iteration of the routine. Additionally, to ensure boundedness on the trust regions and to prevent an admitted unbounded cost, the cost weighting of the trust regions is increased after each iteration.
+The goal is for the successive convexification algorithm \ref{Successive} to continue iterating until $\Delta_{tol}$ and $\nu_{tol}$ are met. These are compared to by the magnitude of each vector and are checked at the end of each iteration of the routine. Additionally, to ensure boundedness on the trust regions and to prevent an admitted unbounded cost, the cost weighting of the trust regions is increased after each iteration.
 
 \begin{algorithm}
 \caption{Successive Convexification}\label{Successive}
@@ -598,9 +612,7 @@ The vehicle following the planar path in Figure \ref{fig:planar} reached it's te
 
 
 \section{Non-Planar Problem Solutions}
-Now let us look at a non-planar problem where the initial condition of the vehicle is off-nominal and must make an out-of-plane maneuver to land on the target. The parameters and initial conditions are found in table \ref{table:tablenplanar}. Figure \ref{fig:nplanar} shows a vehicle coming towards the landing pad with an offset lateral position of 100m and with a velocity not pointed directly in-line with the target. All vehicle constraints are met.
-
-The vehicle uses maximum thrust almost the entire duration of the flight. The optimization provides a thrust-vectored solution which precisely arrests the attitude motion while meeting the translational requirements simultaneously. The simple MRP alignment constraint is met and shown in Figure \ref{fig:nplanarcontrols}. The vehicle following the non-planar path in figure \ref{fig:planar} reached its terminal state after $19.95$ seconds and with a final mass of $376.784$kg with a starting mass of $408.23$kg only using $10.6$\% of its fuel. Additionally, figure \ref{fig:nplanar_rv} shows that the terminal position and velocity constraints are met, and the vehicle reaches the landing pad with a safe terminal velocity.
+Now let us look at a non-planar problem where the initial condition of the vehicle is off-nominal and must make an out-of-plane maneuver to land on the target. The parameters and initial conditions are found in table \ref{table:tablenplanar}. Figure \ref{fig:nplanar} shows a vehicle coming towards the landing pad with an offset lateral position of 100m and with a velocity not pointed directly in-line with the target. All vehicle constraints are met. The vehicle uses maximum thrust almost the entire duration of the flight. The optimization provides a thrust-vectored solution which precisely arrests the attitude motion while meeting the translational requirements simultaneously. The simple MRP alignment constraint is met and shown in Figure \ref{fig:nplanarcontrols}.
 
 \begin{figure}[!htbp] 
   \centering
@@ -609,40 +621,24 @@ The vehicle uses maximum thrust almost the entire duration of the flight. The op
   \label{fig:nplanarcontrols}
  \end{figure}
 
-% \clearpage
-% \begin{figure}[!htbp] 
-%   \centering
-%   \includegraphics[width=0.8\textwidth]{figs/nonplanar_3dtraj.eps}
-%   \caption{Non-Planar Guidance Problem: Vehicle Approaches Offset from Target}
-%   \label{fig:nplanar}
-%  \end{figure}
+\clearpage
+\begin{figure}[!htbp] 
+  \centering
+  \includegraphics[width=0.8\textwidth]{figs/nonplanar_3dtraj.eps}
+  \caption{Non-Planar Guidance Problem: Vehicle Approaches Offset from Target}
+  \label{fig:nplanar}
+ \end{figure}
  
-%  \begin{figure}[!ht] 
-%   \centering
-%   \includegraphics[width=.45\linewidth]{figs/nonplanar_rv.eps}
-%   \caption{Non-Planar Guidance Problem: Position and Velocity Histories}
-%   \label{fig:nplanar_rv}
-% \end{figure}
+ \begin{figure}[ht] 
+  \centering
+  \includegraphics[width=.5\linewidth]{figs/nonplanar_rv.eps}
+  \caption{Non-Planar Guidance Problem: Position and Velocity Histories}
+  \label{fig:nplanar_rv}
+\end{figure}
 
-\begin{figure*}[htpb!]
-    \centering
-    \begin{subfigure}[t]{0.5\textwidth}
-        \centering
-        \includegraphics[height=3in]{figs/nonplanar_3dtraj.eps}
- 		 \caption{Vehicle Approach is Offset from Target}
- 		 \label{fig:nplanar}
-    \end{subfigure}%
-    ~ 
-    \begin{subfigure}[t]{0.5\textwidth}
-        \centering
-        \includegraphics[height=3in]{figs/nonplanar_rv.eps}
-        \caption{Position and Velocity Histories}
-        \label{fig:nplanar_rv}
-    \end{subfigure}
-    \caption{Non-Planar Guidance Problem}
-    \label{nplanar}
-\end{figure*}
-%
+
+The vehicle following the non-planar path in figure \ref{fig:planar} reached its terminal state after $19.95$ seconds and with a final mass of $376.784$kg with a starting mass of $408.23$kg only using $10.6$\% of its fuel. Additionally, figure \ref{fig:nplanar_rv} shows that the terminal position and velocity constraints are met, and the vehicle reaches the landing pad with a safe terminal velocity.
+
 \begin{table}[ht]
   \caption{Parameters Used for Non-Planar Problem}
   \centering 
@@ -688,16 +684,13 @@ The vehicle uses maximum thrust almost the entire duration of the flight. The op
 
 \clearpage
 \section{Conclusion}
-In this paper, we presented a 6-DoF successive convexification approach to solving the powered descent guidance problem using Modified Rodrigues Parameters. We started with a dynamically inconsistent reference trajectory, input history, and final time estimate as the linearization path for the the problem. We use these values to compute the free-final-time discrete time LTV dynamics matrices to be used in the optimization problem. Once these are found for each step, we can convexify the non-convex constraints and solve the resulting SOCP problem to minimize the final time, dynamic relaxation terms, and change between iterations. Once a solution trajectory is sufficiently dynamically feasible, and similar to the previous solution, we terminate the routine and use the solution.
-Two prototype problems consisting of an in-plane landing and an out-of-plane landing were solved with this procedure to demonstrate the algorithm. These results show that a good solution can be determined even with bad initial reference trajectory, input histories, and final time estimates. 
+The successive convexification routine is a very valuable tool in that it can quickly find dynamically feasible trajectories for a wide set of vehicle constraints and parameters. It could be valuable as an offline tool, and perhaps used on-board with improvements in 
 
-The successive convexification routine is a very valuable tool in that it can quickly find dynamically feasible trajectories for a wide set of vehicle constraints and parameters. While a valuable offline tool, the posed version could be improved to run on-board with better a better initial linearization path, further reduced problem, lower level implementation, and even a customized solver. Future work could involve the addition of other mission phase-of-flight constraints via the nesting of time dilation coefficients, each segment having their own state and control constraints. 
-%
 \section*{Acknowledgments}
 The authors would like to thank Prof. Behçet Açikmeşe and the Autonomous Control Laboratory at the University of Washington.
-%
-\begin{spacing}{0.01}
+
+\begin{singlespace} 
 \bibliography{references}
-\end{spacing}
+\end{singlespace}
 
 \end{document}
