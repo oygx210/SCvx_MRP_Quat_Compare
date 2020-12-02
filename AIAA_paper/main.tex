@@ -679,19 +679,12 @@ The vehicle uses maximum thrust almost the entire duration of the flight. The op
 \end{table}
 
 
-
-
-
-
-
-
-
 \clearpage
 \section{Conclusion}
 In this paper, we presented a 6-DoF successive convexification approach to solving the powered descent guidance problem using Modified Rodrigues Parameters. We started with a dynamically inconsistent reference trajectory, input history, and final time estimate as the linearization path for the the problem. We use these values to compute the free-final-time discrete time LTV dynamics matrices to be used in the optimization problem. Once these are found for each step, we can convexify the non-convex constraints and solve the resulting SOCP problem to minimize the final time, dynamic relaxation terms, and change between iterations. Once a solution trajectory is sufficiently dynamically feasible, and similar to the previous solution, we terminate the routine and use the solution.
 Two prototype problems consisting of an in-plane landing and an out-of-plane landing were solved with this procedure to demonstrate the algorithm. These results show that a good solution can be determined even with bad initial reference trajectory, input histories, and final time estimates. 
 
-The successive convexification routine is a very valuable tool in that it can quickly find dynamically feasible trajectories for a wide set of vehicle constraints and parameters. While a valuable offline tool, the posed version could be improved to run on-board with better a better initial linearization path, further reduced problem, lower level implementation, and even a customized solver. Future work could involve the addition of other mission phase-of-flight constraints via the nesting of time dilation coefficients, each segment having their own state and control constraints. 
+The successive convexification routine is a valuable tool in that it can quickly find dynamically feasible trajectories for a wide set of vehicle constraints and parameters. While a valuable offline tool, the posed version could be improved to perform faster on-board with a better initial linearization path, further reduced problem, lower level implementation, and even a customized solver. Future work could involve the addition of other mission phase-of-flight constraints via the nesting of time dilation coefficients, each segment having their own state and control constraints. 
 %
 \section*{Acknowledgments}
 The authors would like to thank Prof. Behçet Açikmeşe and the Autonomous Control Laboratory at the University of Washington.
